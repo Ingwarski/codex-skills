@@ -15,15 +15,12 @@ If a gap-check ran, or if the skill synthesized decisions not fully determined b
 
 ## Input
 Read:
-- `README.md`
-- `docs/product-idea.md`
+- `README.md`, if present
 - `docs/prd.md`
 - `docs/user-journey.md`, if present
 - `docs/screen-map.md`, if present
 - `docs/wireframes.md`, if present
 - `docs/ux-ui-brief.md`, if present
-- `docs/terminology.md`, if present
-- `docs/project-principles.md`, if present
 
 This skill can run any time after `docs/prd.md` exists. Running it before the design artifacts is recommended, so they are produced under these guardrails. Re-run it after the UX artifacts exist to add design-authority rules.
 

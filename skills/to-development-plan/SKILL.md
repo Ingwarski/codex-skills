@@ -15,17 +15,14 @@ If a gap-check ran, or if the skill synthesized decisions not fully determined b
 
 ## Input
 Read:
-- `README.md`
-- `docs/product-idea.md`
+- `README.md`, if present
 - `docs/prd.md`
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
 - `docs/ux-ui-brief.md`
-- `docs/guardrails.md`, if present
+- `docs/guardrails.md`, if present from the `to-guardrails` step
 - `docs/qa-checklist.md`, if present
-- `docs/terminology.md`, if present
-- `docs/project-principles.md`, if present
 
 ## Output
 Create or update exactly one artifact:

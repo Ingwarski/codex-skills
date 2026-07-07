@@ -87,15 +87,13 @@ Start in a product project that has at least:
 docs/prd.md
 ```
 
-Useful optional source files:
+Useful optional project context:
 
 ```text
 README.md
-docs/product-idea.md
-docs/terminology.md
-docs/project-principles.md
-docs/guardrails.md
 ```
+
+Do not create extra context documents just to satisfy this pipeline. The skills should use `docs/prd.md`, the relevant earlier pipeline artifacts, and explicit user answers as the source of truth. `docs/guardrails.md` is not a starting input; it is created by `to-guardrails` and can only be used by later skills or by earlier skills if the user deliberately ran guardrails first.
 
 Then ask Codex to run each skill in sequence.
 
@@ -185,4 +183,3 @@ claude-code-skill-audit-prompt.md
 ```
 
 `claude-code-skill-audit-prompt.md` is the audit prompt used to review these skills against the user's requirements and relevant external skills.
-
