@@ -1,6 +1,6 @@
 # Codex SDD Skills
 
-This repository contains a small chain of Codex skills for moving from a PRD to product UX/UI planning and implementation planning.
+This repository contains a small chain of Codex skills for moving from a PRD to product UX/UI planning, architecture, DoD/evals, QA, and implementation planning.
 
 The skills are designed for **SDD - Specification Driven Development**. They are not a TDD workflow and they are not generic prompt templates. Each skill creates exactly one artifact, uses source files as the source of truth, and asks focused questions before writing when critical information is missing.
 
@@ -14,6 +14,8 @@ to-prd
 -> to-screen-map
 -> to-wireframes
 -> to-ux-ui-brief
+-> to-architecture
+-> to-dod-evals
 -> to-guardrails
 -> to-qa-checklist
 -> to-development-plan
@@ -29,6 +31,8 @@ to-prd
 | `to-screen-map` | `docs/screen-map.md` | Defines screens, surfaces, routes, navigation, transitions, entry/exit points, and the canonical state list per screen. |
 | `to-wireframes` | `docs/wireframes.md` | Converts the screen map into low-fidelity screen structures, hierarchy, CTAs, forms, content zones, and state variants. |
 | `to-ux-ui-brief` | `docs/ux-ui-brief.md` | Defines the UX/UI direction, Design Spine, Experience Spine, visual system, interaction rules, responsive behavior, accessibility floor, and design handoff guidance. |
+| `to-architecture` | `docs/architecture.md` | Defines system architecture, modules, boundaries, data/state model, integrations, runtime model, architecture decisions, and risks. |
+| `to-dod-evals` | `docs/dod-evals.md` | Defines Definition of Done, reusable eval gates, verification profile, evidence requirements, state/lane gates, and PR/merge completion rules. |
 | `to-guardrails` | `docs/guardrails.md` | Defines source-of-truth order, AI autonomy boundaries, scope limits, conflict handling, stop conditions, and verification policy. |
 | `to-qa-checklist` | `docs/qa-checklist.md` | Creates a source-backed QA checklist with acceptance, UX/UI, responsive, accessibility, visual regression, evidence, and release-readiness checks. |
 | `to-development-plan` | `docs/development-plan.md` | Converts approved SDD artifacts into implementation units, dependency order, acceptance checks, and verification steps. |
@@ -54,6 +58,8 @@ The documents are intentionally separated:
 - `screen-map.md` owns which screens and states exist.
 - `wireframes.md` owns screen structure and state structure.
 - `ux-ui-brief.md` owns visual and experience direction.
+- `architecture.md` owns system architecture, module boundaries, data/state model, integrations, runtime model, and architecture decisions.
+- `dod-evals.md` owns Definition of Done, reusable gates, eval result format, evidence requirements, and completion rules.
 - `guardrails.md` owns AI behavior and source-of-truth policy.
 - `qa-checklist.md` owns verification checks and evidence artifacts.
 - `development-plan.md` owns implementation units and build order.
@@ -72,6 +78,8 @@ ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-user-journey" ~/.codex/ski
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-screen-map" ~/.codex/skills/to-screen-map
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-wireframes" ~/.codex/skills/to-wireframes
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-ux-ui-brief" ~/.codex/skills/to-ux-ui-brief
+ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-architecture" ~/.codex/skills/to-architecture
+ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-dod-evals" ~/.codex/skills/to-dod-evals
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-guardrails" ~/.codex/skills/to-guardrails
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-qa-checklist" ~/.codex/skills/to-qa-checklist
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-development-plan" ~/.codex/skills/to-development-plan
@@ -109,12 +117,16 @@ Then:
 Use to-screen-map for this project.
 Use to-wireframes for this project.
 Use to-ux-ui-brief for this project.
+Use to-architecture for this project.
+Use to-dod-evals for this project.
 Use to-guardrails for this project.
 Use to-qa-checklist for this project.
 Use to-development-plan for this project.
 ```
 
 `to-guardrails` can also be run earlier, any time after `docs/prd.md` exists. Running it before design artifacts is useful when you want the whole pipeline constrained by explicit AI behavior rules. Re-run it later after UX artifacts exist if design-authority rules need to be added.
+
+`to-architecture` and `to-dod-evals` should run before `to-qa-checklist` and `to-development-plan` when the product needs architecture and completion gates as source-of-truth documents. `to-qa-checklist` verifies those contracts; it does not replace them.
 
 ## What Happens When Information Is Missing
 
@@ -160,6 +172,8 @@ Release readiness is binary:
 
 `to-development-plan` is SDD-first. Tests and verification support the approved spec, but they do not become the source of product truth.
 
+`to-dod-evals` separates acceptance criteria from Definition of Done. Acceptance criteria confirm that a specific item was built correctly; DoD/eval gates define the standing completion bar and evidence required before anything can be called done.
+
 ## Repository Contents
 
 ```text
@@ -171,6 +185,10 @@ skills/
   to-wireframes/
     SKILL.md
   to-ux-ui-brief/
+    SKILL.md
+  to-architecture/
+    SKILL.md
+  to-dod-evals/
     SKILL.md
   to-guardrails/
     SKILL.md

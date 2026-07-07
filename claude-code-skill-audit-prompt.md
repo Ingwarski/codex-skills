@@ -1,4 +1,4 @@
-# Claude Code Prompt: Audit SDD UX/UI Skills
+# Claude Code Prompt: Audit SDD Skills Pipeline
 
 You are auditing a set of Codex skills. Do not modify files unless explicitly asked later. Your task is to deeply review whether these created skills match the user's needs and whether they properly reuse proven mechanisms from existing external skills instead of reinventing weak templates.
 
@@ -13,6 +13,8 @@ Read these files completely:
 - `skills/to-screen-map/SKILL.md`
 - `skills/to-wireframes/SKILL.md`
 - `skills/to-ux-ui-brief/SKILL.md`
+- `skills/to-architecture/SKILL.md`
+- `skills/to-dod-evals/SKILL.md`
 - `skills/to-guardrails/SKILL.md`
 - `skills/to-qa-checklist/SKILL.md`
 - `skills/to-development-plan/SKILL.md`
@@ -21,7 +23,7 @@ Read these files completely:
 
 1. This is an SDD pipeline, not TDD.
 2. The intended chain is:
-   `to-prd -> to-user-journey -> to-screen-map -> to-wireframes -> to-ux-ui-brief -> to-guardrails -> to-qa-checklist -> to-development-plan`
+   `to-prd -> to-user-journey -> to-screen-map -> to-wireframes -> to-ux-ui-brief -> to-architecture -> to-dod-evals -> to-guardrails -> to-qa-checklist -> to-development-plan`
 3. Each skill must create or update exactly one output artifact.
 4. Output files must be strictly separated by responsibility and must not duplicate or contradict one another.
 5. AI is not the source of truth. Source files and explicit user answers are the source of truth.
@@ -38,6 +40,8 @@ Read these files completely:
 - `docs/screen-map.md`
 - `docs/wireframes.md`
 - `docs/ux-ui-brief.md`
+- `docs/architecture.md`
+- `docs/dod-evals.md`
 - `docs/guardrails.md`
 - `docs/qa-checklist.md`
 - `docs/development-plan.md`
@@ -153,6 +157,64 @@ Must not own:
 - QA checklist
 - implementation tasks
 
+### `docs/architecture.md`
+
+Owns:
+
+- system architecture overview
+- architecture principles and constraints
+- module and boundary map
+- runtime and automation model
+- data and state model
+- integration map
+- technology stack constraints when source-backed or codebase-confirmed
+- security, privacy, reliability, performance, and observability architecture concerns
+- architecture diagram
+- architecture decision log
+- architecture risks and mitigations
+
+Must not own:
+
+- new product requirements
+- user journeys
+- screen inventory
+- wireframe layouts
+- visual design direction
+- Definition of Done
+- eval gates
+- QA checklist
+- implementation tasks
+
+### `docs/dod-evals.md`
+
+Owns:
+
+- Definition of Done model
+- acceptance criteria vs DoD distinction
+- reusable verification profile
+- hard gates
+- unit checks
+- system checks
+- UX/UI checks
+- release checks
+- lane/state promotion gates
+- eval result format
+- evidence requirements
+- failure and blocker classification
+- rerun and recovery rules
+- PR/merge/completion rules
+
+Must not own:
+
+- new product requirements
+- architecture decisions
+- user journeys
+- screen inventory
+- wireframe layouts
+- visual design direction
+- per-screen QA checklist details
+- implementation units
+
 ### `docs/guardrails.md`
 
 Owns:
@@ -204,6 +266,8 @@ Must not own:
 - new screens
 - wireframe changes
 - visual design direction
+- architecture decisions
+- Definition of Done or reusable eval gates
 - implementation tasks
 
 ### `docs/development-plan.md`
@@ -227,6 +291,8 @@ Must not own:
 - new journeys
 - new screens
 - visual design decisions
+- architecture decisions
+- Definition of Done or reusable eval gates
 - QA checklist duplication beyond references
 
 ## External And Proven Skills To Inspect
@@ -267,12 +333,20 @@ Figma and design handoff, if relevant:
 - `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-implement-motion/SKILL.md`
 - `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-use-motion/SKILL.md`
 
-QA, verification, planning:
+Architecture, DoD, QA, verification, planning:
 
 - `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/verification-before-completion/SKILL.md`
 - `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/writing-plans/SKILL.md`
 - `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/executing-plans/SKILL.md`
 - `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/test-driven-development/SKILL.md`, only to identify what not to import because this workflow is SDD, not TDD.
+- `https://github.com/luongnv89/skills/blob/main/skills/tad-generator/SKILL.md`
+- `https://github.com/addyosmani/agent-skills/blob/main/skills/documentation-and-adrs/SKILL.md`
+- `https://raw.githubusercontent.com/addyosmani/agent-skills/main/references/definition-of-done.md`
+- `https://github.com/dawiddutoit/custom-claude/blob/main/skills/quality-run-quality-gates/SKILL.md`
+- `https://github.com/github/awesome-copilot/blob/main/skills/breakdown-epic-arch/SKILL.md`
+- `https://github.com/github/awesome-copilot/blob/main/skills/breakdown-plan/SKILL.md`
+- `https://github.com/xwings/eatmycode`
+- `https://github.com/NousResearch/hermes-agent/issues/44000`
 
 ### B. BMAD UX Coach References
 

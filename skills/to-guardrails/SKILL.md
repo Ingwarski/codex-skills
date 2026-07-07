@@ -21,6 +21,8 @@ Read:
 - `docs/screen-map.md`, if present
 - `docs/wireframes.md`, if present
 - `docs/ux-ui-brief.md`, if present
+- `docs/architecture.md`, if present from the `to-architecture` step
+- `docs/dod-evals.md`, if present from the `to-dod-evals` step
 
 This skill can run any time after `docs/prd.md` exists. Running it before the design artifacts is recommended, so they are produced under these guardrails. Re-run it after the UX artifacts exist to add design-authority rules.
 

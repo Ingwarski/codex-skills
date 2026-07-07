@@ -1,6 +1,6 @@
 ---
 name: to-development-plan
-description: Use when approved SDD product, UX, guardrail, and QA artifacts exist and the user wants a development plan, implementation plan, build order, task breakdown, or verification plan.
+description: Use when approved SDD product, UX, architecture, DoD/eval, guardrail, and QA artifacts exist and the user wants a development plan, implementation plan, build order, task breakdown, or verification plan.
 ---
 # to-development-plan
 
@@ -21,6 +21,8 @@ Read:
 - `docs/screen-map.md`
 - `docs/wireframes.md`
 - `docs/ux-ui-brief.md`
+- `docs/architecture.md`, if present from the `to-architecture` step
+- `docs/dod-evals.md`, if present from the `to-dod-evals` step
 - `docs/guardrails.md`, if present from the `to-guardrails` step
 - `docs/qa-checklist.md`, if present
 
@@ -47,6 +49,8 @@ It must not define:
 - new screens
 - wireframe changes
 - visual design changes
+- architecture decisions
+- Definition of Done or reusable eval gates
 - QA checklist details beyond references
 
 This is an SDD development plan. It may include tests and verification, but it must not reframe the workflow as TDD-first unless the source documents explicitly require that.
@@ -67,6 +71,8 @@ Before writing, verify that sources identify:
 - approved screens and states
 - UX/UI expectations
 - implementation constraints or stack, if available
+- architecture constraints, if available
+- DoD/eval gates, if available
 - acceptance or QA criteria
 - required verification commands, if available
 - existing architecture, file structure, or component system when a codebase exists
@@ -78,19 +84,21 @@ If stack, constraints, dependencies, or verification expectations are missing an
 1. Inspect the input files.
 2. Extract implementation scope only from approved SDD artifacts.
 3. Inspect the codebase structure if implementation will happen in an existing project.
-4. Map likely files, modules, routes, components, services, and tests before defining tasks.
-5. Break work into implementation units that can be built and verified.
-6. Order units by dependency and user-value sequence.
-7. Attach source references and acceptance checks to every unit.
-8. Include verification steps derived from `docs/qa-checklist.md` when present.
-9. Self-review coverage: every PRD requirement and every screen and state in `docs/screen-map.md` maps to an implementation unit or to Out Of Scope / Open Questions with a reason; unit names and references are consistent across the plan; no placeholders remain.
-10. Avoid tiny commit choreography as the main teaching frame.
-11. Avoid adding product scope or design decisions.
-12. Before writing the artifact, verify the planned content:
+4. Use `docs/architecture.md` as the architecture source of truth when present; do not re-decide architecture inside the plan.
+5. Use `docs/dod-evals.md` as the Definition of Done and eval-gate source of truth when present; do not redefine gates inside the plan.
+6. Map likely files, modules, routes, components, services, and tests before defining tasks.
+7. Break work into implementation units that can be built and verified.
+8. Order units by dependency and user-value sequence.
+9. Attach source references and acceptance checks to every unit.
+10. Include verification steps derived from `docs/qa-checklist.md` and `docs/dod-evals.md` when present.
+11. Self-review coverage: every PRD requirement and every screen and state in `docs/screen-map.md` maps to an implementation unit or to Out Of Scope / Open Questions with a reason; architecture constraints from `docs/architecture.md` and DoD/eval gates from `docs/dod-evals.md` map to verification or sequencing notes when present; unit names and references are consistent across the plan; no placeholders remain.
+12. Avoid tiny commit choreography as the main teaching frame.
+13. Avoid adding product scope, architecture decisions, DoD rules, or design decisions.
+14. Before writing the artifact, verify the planned content:
    - Every implementation unit traces to a named source file or an explicit user answer, or it is moved to `Open Questions`.
    - No content belongs to another artifact's ownership per the Artifact Boundary.
    - No placeholder text and no generic filler written to satisfy the template.
-13. Create or update only `docs/development-plan.md`.
+15. Create or update only `docs/development-plan.md`.
 
 ## Required Output Structure
 Use this structure:

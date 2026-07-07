@@ -1,0 +1,183 @@
+---
+name: to-dod-evals
+description: Use when approved SDD product and architecture artifacts exist and the user wants dod-evals.md, Definition of Done, eval gates, verification profile, quality gates, lane/state promotion gates, PR/merge rules, or evidence requirements before QA checklist or development planning.
+---
+# to-dod-evals
+
+## Universal SDD Rule
+AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
+
+If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+
+Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/dod-evals.md`, every DoD rule, gate, eval, and evidence requirement must be source-backed, user-confirmed, codebase-confirmed, or left in `Open Questions`.
+
+If a gap-check ran, or if the skill synthesized verification rules not fully determined by source files or existing code, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources and code already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
+
+## Input
+Read:
+- `README.md`, if present
+- `docs/prd.md`
+- `docs/user-journey.md`, if present
+- `docs/screen-map.md`, if present
+- `docs/wireframes.md`, if present
+- `docs/ux-ui-brief.md`, if present
+- `docs/architecture.md`
+- `docs/guardrails.md`, if the user deliberately ran `to-guardrails` before this skill
+- `docs/product-idea.md`, only if `docs/prd.md` explicitly names it as an authoritative source or the user asks to use it
+
+Inspect the codebase when implementation or verification will happen in an existing project. Package scripts, CI config, tests, build config, lint/typecheck config, and deployment config can confirm available gates; they do not authorize new product scope.
+
+## Output
+Create or update exactly one artifact:
+- `docs/dod-evals.md`
+
+Do not modify unrelated files.
+
+## Artifact Boundary
+`docs/dod-evals.md` owns:
+- Definition of Done model
+- distinction between acceptance criteria and standing DoD
+- reusable verification profile
+- hard gates, unit checks, system checks, UX/UI checks, and release gates
+- lane/state promotion gates when the product has workflow states
+- eval result format
+- evidence requirements
+- failure and blocker classification
+- rerun, recovery, PR, merge, and completion rules
+
+It must not define:
+- new product requirements
+- architecture decisions
+- user journeys
+- screen inventory or wireframe layouts
+- visual design direction
+- per-screen QA checklist details
+- implementation units or task breakdown
+
+`docs/qa-checklist.md` owns concrete checklist items for a specific product artifact or release. `docs/dod-evals.md` owns the reusable DoD/eval contract those checklist items cite.
+
+## Proven Mechanics To Use
+Adapt the useful parts of proven DoD, quality-gate, planning, and eval references:
+- From `definition-of-done`: separate acceptance criteria from Definition of Done; acceptance asks "did we build the right thing"; DoD asks "is it finished to our standard"; use a stable reusable bar for correctness, quality, integration, documentation, and ship-readiness.
+- From `quality-run-quality-gates`: detect available project gates; run gates before completion claims; report pass/fail clearly; completion is blocked until gates pass; rerun after fixes.
+- From `verification-before-completion`: evidence before claims; identify what proves the claim, run it fresh, read the output, then state the result.
+- From `breakdown-plan`: define DoD at useful levels such as product, feature/unit, story/task, enabler, and test where sources support those levels.
+- From eval/lane-gate patterns: attach eval definitions to workflow state transitions; a lane promotion is blocked until required evals pass; evals have standard result shape and persistable evidence.
+- From SDD guardrails: source docs and confirmed code win over agent self-assessment.
+
+Do not copy these source skills wholesale:
+- Do not turn this into a command runner. This skill writes the DoD/evals source-of-truth document; it does not execute gates.
+- Do not create GitHub issues, project automation, or sprint plans.
+- Do not equate "tests pass" with done.
+- Do not claim WCAG, security, performance, or compliance guarantees from static docs alone.
+- Do not invent CI scripts, package scripts, eval harnesses, PR rules, or deployment gates when sources or code do not support them.
+
+## Gap-Check
+Before writing, verify that sources or code identify:
+- product acceptance criteria or success conditions
+- architecture/runtime constraints that affect verification
+- workflow states, lanes, or completion transitions
+- required hard gates such as build, lint, typecheck, tests, security scan, or manual approval
+- UX/UI verification expectations
+- PR, merge, branch, commit, or release rules, if relevant
+- what evidence counts for completion claims
+- failure classes and blocker handling
+- which checks can be automated now versus later
+
+If verification profile, completion gates, workflow promotion rules, or merge/completion rules are missing and materially affect the document, stop and ask grill-me questions before producing the output.
+
+Ask DoD/eval questions with recommended answers based on sources. Prefer:
+- `passed` only when required gates pass with fresh evidence
+- `blocked` when P0/P1/P2 or required gates remain open
+- static docs can define intended checks but cannot prove runtime behavior
+- manual approval is required for user-facing or irreversible transitions unless sources say otherwise
+
+## Workflow
+1. Inspect the input files.
+2. Inspect codebase verification surfaces when a codebase exists: `package.json`, test directories, CI config, lint/typecheck config, build scripts, Playwright/Vitest/Jest config, and deployment config.
+3. Extract acceptance criteria and completion semantics from the PRD and related SDD artifacts.
+4. Extract architecture-driven verification needs from `docs/architecture.md`.
+5. Separate acceptance criteria, DoD, QA checklist items, and implementation tasks.
+6. Define the standing DoD model.
+7. Define verification profile tiers: hard gates, unit checks, system checks, UX/UI checks, evidence, and release/merge checks.
+8. Define lane/state promotion gates when the product has workflow states or Kanban-like transitions.
+9. Define eval result format with pass/fail/blocked status, evidence, owner, timestamp/source, and rerun rule.
+10. Define failure and blocker classification without duplicating `docs/qa-checklist.md`.
+11. Before writing the artifact, verify the planned content:
+   - Every DoD rule, gate, eval, and evidence requirement traces to a named source file, codebase evidence, or explicit user answer, or it is moved to `Open Questions`.
+   - No content belongs to another artifact's ownership per the Artifact Boundary.
+   - No placeholder text and no generic filler written to satisfy the template.
+   - The artifact does not invent tests, scripts, CI, PR policy, or implementation scope.
+12. Create or update only `docs/dod-evals.md`.
+
+## Required Output Structure
+Use this structure:
+
+Required contract sections are `Source References`, `Definition Of Done Model`, `Verification Profile`, `Gate Matrix`, `Evidence Requirements`, `Failure And Blocker Classification`, `PR Merge And Completion Rules`, `Out Of Scope`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
+
+```markdown
+# DoD And Evals
+
+## Source References
+
+## Definition Of Done Model
+
+## Acceptance Criteria Vs Definition Of Done
+
+## Global Definition Of Done
+
+## Feature Unit Definition Of Done
+
+## Verification Profile
+
+### Hard Gates
+
+### Unit Checks
+
+### System Checks
+
+### UX/UI Checks
+
+### Release Checks
+
+## Gate Matrix
+
+## Lane Or State Promotion Gates
+
+## Eval Result Format
+
+## Evidence Requirements
+
+## Evidence Limits
+
+## Failure And Blocker Classification
+
+## Rerun And Recovery Rules
+
+## PR Merge And Completion Rules
+
+## Out Of Scope
+
+## Open Questions
+```
+
+For every gate or eval include:
+- `Gate`
+- `Purpose`
+- `Source References`
+- `Applies To`
+- `Required Evidence`
+- `Pass Condition`
+- `Fail Or Block Condition`
+- `Rerun Rule`
+- `Automation Status`: `automated`, `manual`, `not available yet`, or `open question`
+
+## Final Report
+Return:
+- `Result`
+- `Created/Updated File`
+- `Confirmed DoD And Eval Rules`
+- `Omitted Optional Sections`, if any
+- `Open Questions`
+- `Next Recommended Action`
+- `Next Recommended Skill`
