@@ -1,0 +1,499 @@
+# Claude Code Prompt: Audit SDD UX/UI Skills
+
+You are auditing a set of Codex skills. Do not modify files unless explicitly asked later. Your task is to deeply review whether these created skills match the user's needs and whether they properly reuse proven mechanisms from existing external skills instead of reinventing weak templates.
+
+Workspace:
+`/Users/ingwar/Documents/Codex Skills`
+
+## Created Skills To Audit
+
+Read these files completely:
+
+- `skills/to-user-journey/SKILL.md`
+- `skills/to-screen-map/SKILL.md`
+- `skills/to-wireframes/SKILL.md`
+- `skills/to-ux-ui-brief/SKILL.md`
+- `skills/to-guardrails/SKILL.md`
+- `skills/to-qa-checklist/SKILL.md`
+- `skills/to-development-plan/SKILL.md`
+
+## User's Core Requirements
+
+1. This is an SDD pipeline, not TDD.
+2. The intended chain is:
+   `to-prd -> to-user-journey -> to-screen-map -> to-wireframes -> to-ux-ui-brief -> to-guardrails -> to-qa-checklist -> to-development-plan`
+3. Each skill must create or update exactly one output artifact.
+4. Output files must be strictly separated by responsibility and must not duplicate or contradict one another.
+5. AI is not the source of truth. Source files and explicit user answers are the source of truth.
+6. If required information is missing from source files, the skill must use a grill-me style gap-check before producing the output file.
+7. No draft output files. The skill should either create the final artifact or ask questions first.
+8. No hidden assumptions. Anything not source-backed or user-confirmed goes to `Open Questions`.
+9. The goal is not document proliferation. The goal is to reliably move from PRD to high-quality UX/UI design and then implementation planning.
+10. If proven mechanisms already exist in other skills, use them. Do not reward shallow original templates.
+11. The final audit must be direct, evidence-based, and specific. Do not give vague praise.
+
+## Expected Output Artifacts In The Pipeline
+
+- `docs/user-journey.md`
+- `docs/screen-map.md`
+- `docs/wireframes.md`
+- `docs/ux-ui-brief.md`
+- `docs/guardrails.md`
+- `docs/qa-checklist.md`
+- `docs/development-plan.md`
+
+## Artifact Responsibility Boundaries
+
+Use these boundaries as the user's intended contract.
+
+### `docs/user-journey.md`
+
+Owns:
+
+- primary user
+- user context
+- user goal
+- motivation
+- real-session framing
+- named protagonist if source-backed or user-confirmed
+- journey stages
+- actions
+- decision points
+- friction
+- fears
+- blockers
+- exit points
+- success state
+- failure path
+- MVP journey risks
+
+Must not own:
+
+- screen list
+- routes
+- wireframe layout
+- colors
+- typography
+- design tokens
+- QA checklist
+- implementation tasks
+
+### `docs/screen-map.md`
+
+Owns:
+
+- screens
+- surfaces
+- routes
+- navigation
+- entry points
+- exit points
+- screen states
+- transitions
+- journey-to-screen trace
+- surface closure
+
+Must not own:
+
+- detailed wireframe layout
+- component hierarchy inside screens
+- final visual design
+- QA checklist
+- implementation tasks
+
+### `docs/wireframes.md`
+
+Owns:
+
+- low-fidelity screen structure
+- hierarchy
+- content zones
+- CTAs
+- fields
+- forms
+- state variants
+- structural responsive notes
+
+Must not own:
+
+- final colors
+- typography system
+- brand mood
+- visual polish
+- design tokens
+- implementation tasks
+
+### `docs/ux-ui-brief.md`
+
+Owns:
+
+- UX/UI design direction
+- visual system
+- design spine
+- experience spine
+- information density
+- interface tone
+- semantic tokens
+- typography direction
+- color direction
+- spacing rhythm
+- component appearance principles
+- component behavior principles
+- interaction feel
+- responsive behavior
+- accessibility floor
+- design handoff prompt or guidance
+
+Must not own:
+
+- new product features
+- new screens
+- new routes
+- detailed wireframe duplication
+- QA checklist
+- implementation tasks
+
+### `docs/guardrails.md`
+
+Owns:
+
+- source-of-truth order
+- AI autonomy boundaries
+- allowed changes
+- forbidden changes
+- scope boundaries
+- conflict resolution
+- when to ask
+- when to stop
+- design authority rules
+- evidence requirements
+- artifact separation rules
+- verification rules
+
+Must not own:
+
+- product journey content
+- screen inventory
+- wireframes
+- visual design direction
+- QA checklist details
+- implementation plan
+
+### `docs/qa-checklist.md`
+
+Owns:
+
+- source-backed QA checklist
+- product acceptance checks
+- journey checks
+- screen/state checks
+- wireframe consistency checks
+- UX/UI checks
+- visual regression checks
+- responsive checks
+- accessibility checks
+- browser/device checks
+- evidence requirements
+- evidence limits
+- release readiness
+
+Must not own:
+
+- new product requirements
+- new journeys
+- new screens
+- wireframe changes
+- visual design direction
+- implementation tasks
+
+### `docs/development-plan.md`
+
+Owns:
+
+- implementation units
+- dependency order
+- codebase map if a codebase exists
+- work items
+- source references per unit
+- acceptance checks per unit
+- verification plan
+- visual/UX verification
+- risks and sequencing
+- out of scope
+
+Must not own:
+
+- new product requirements
+- new journeys
+- new screens
+- visual design decisions
+- QA checklist duplication beyond references
+
+## External And Proven Skills To Inspect
+
+Do not limit the audit to BMAD UX. BMAD UX is central for UX/UI planning, but the final skills must also learn from verified non-BMAD local skills: grill-me, to-prd, modern-ux-ui-2026, Product Design plugin skills, Figma plugin skills, verification-before-completion, writing-plans, executing-plans, and QA/design-QA equivalents.
+
+If any file or URL is unavailable, say that explicitly. Do not pretend it was inspected.
+
+### A. Verified Non-BMAD Local Skills Available On This Machine
+
+Core behavior, source-of-truth, gap-check:
+
+- `/Users/ingwar/.codex/skills/grill-me/SKILL.md`
+- `/Users/ingwar/.codex/skills/to-prd/SKILL.md`
+- `/Users/ingwar/.codex/skills/.system/skill-creator/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/writing-skills/SKILL.md`
+
+UX/UI and design quality:
+
+- `/Users/ingwar/.codex/skills/modern-ux-ui-2026/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/get-context/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/audit/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/audit/references/design-audit-framework.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/ideate/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/image-to-code/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/prototype/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/url-to-code/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/design-qa/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/skills/research/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/product-design/0.1.48/references/critical-overrides.md`
+
+Figma and design handoff, if relevant:
+
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-generate-design/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-generate-library/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-use/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-generate-diagram/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-implement-motion/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated-remote/figma/2.0.14/skills/figma-use-motion/SKILL.md`
+
+QA, verification, planning:
+
+- `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/verification-before-completion/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/writing-plans/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/executing-plans/SKILL.md`
+- `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/test-driven-development/SKILL.md`, only to identify what not to import because this workflow is SDD, not TDD.
+
+### B. BMAD UX Coach References
+
+Inspect these deeply:
+
+- `https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/main/web-bundles/ux-coach/SKILL.md`
+- `https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/main/web-bundles/ux-coach/INSTRUCTIONS.md`
+- `https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/main/web-bundles/ux-coach/ux-validation.md`
+
+Extract especially:
+
+- DESIGN.md spine
+- EXPERIENCE.md spine
+- Decisions log
+- named-protagonist journeys
+- concern scan
+- surface closure
+- spines-win-on-conflict rule
+- validation rubric
+- Stitch handoff prompt shape
+- visual-first capture patterns
+- accessibility and responsive expectations
+- anti-patterns
+
+### C. Previously Discussed Candidate Skills Without Verified URLs
+
+These skill names were previously discussed as potentially relevant, but no verified public `SKILL.md` URLs are provided here. Search for these exact skill names online and in any local skill cache. If found, inspect them deeply and cite the exact path or URL. If not found, explicitly report `unavailable after search`. Do not infer their contents from the name alone, and do not pretend they were inspected.
+
+Product structure and navigation:
+
+- `site-architecture`
+
+Interface, frontend, visual design:
+
+- `frontend-design`
+- `design-an-interface`
+- `ui-ux-pro-max`
+
+QA and testing:
+
+- `qa`
+- `webapp-testing`
+
+Domain and source discipline:
+
+- `domain-modeling`
+- `ubiquitous-language`
+
+Planning and implementation:
+
+- `implement`
+- `request-refactor-plan`
+
+For each found external skill:
+
+1. Read the full `SKILL.md`.
+2. Extract concrete mechanisms that already work.
+3. Decide whether each mechanism should be:
+   - imported directly;
+   - adapted;
+   - rejected;
+   - used only as a negative example.
+4. Compare against the created SDD skills and identify missing useful mechanisms.
+5. If a skill has security, dependency, or overreach risks, do not recommend wholesale use. Extract only safe useful mechanisms.
+
+If none of these candidate skills can be found as actual readable `SKILL.md` files, the audit must still proceed using the verified non-BMAD local skills and BMAD UX references above. Do not block the audit on unavailable candidate names.
+
+## Audit Process
+
+1. Read all 7 created skills completely.
+2. Read the listed local external/proven skills completely.
+3. Fetch and read the BMAD UX Coach references if network access is available.
+4. Search for the other named public/external skills.
+5. Extract the working mechanisms from every available external skill.
+6. Compare each created skill against:
+   - the user's requirements;
+   - artifact separation;
+   - SDD pipeline position;
+   - grill-me/gap-check behavior;
+   - source-of-truth discipline;
+   - UX/UI quality usefulness;
+   - reuse of proven mechanisms;
+   - avoidance of TDD-first thinking;
+   - avoidance of hidden assumptions;
+   - final artifact only, no draft output.
+7. Identify weak, shallow, duplicated, contradictory, overbuilt, or missing parts.
+8. Do not praise vaguely. Give concrete findings with file and line references.
+9. For every finding, explain:
+   - what is wrong;
+   - why it matters;
+   - which external skill or mechanism should influence the fix;
+   - what exact change should be made.
+10. Pay special attention to `to-ux-ui-brief`: it must be strong enough to guide high-quality UX/UI design, not just produce a generic design brief.
+11. Pay special attention to `to-guardrails`: it must prevent AI from inventing scope, silently ignoring missing sources, or claiming completion without evidence.
+12. Pay special attention to duplicated ownership between artifacts.
+13. Pay special attention to whether the current skills say "source-backed" but still allow vague output.
+
+## Required Report
+
+Return the audit in this exact structure:
+
+```markdown
+# SDD Skills Audit
+
+## Executive Verdict
+
+Verdict: ready / partially ready / not ready
+
+Explain the verdict in 3-6 concrete sentences.
+
+## Sources Inspected
+
+### Created Skills
+
+List each created skill and confirm it was read.
+
+### Local External Skills
+
+List each local external skill and confirm whether it was read or unavailable.
+
+### BMAD UX References
+
+List each BMAD URL and confirm whether it was read or unavailable.
+
+### Other Public/External Skills
+
+For each searched skill name, report found/read or unavailable.
+
+## Mechanisms Extracted From Proven Skills
+
+Create a table:
+
+| Source Skill / Reference | Working Mechanism | Should Be Used Where | Current Status In Created Skills | Gap |
+|---|---|---|---|---|
+
+## Skill-By-Skill Audit
+
+For each created skill:
+
+### `skill-name`
+
+- Intended output:
+- Pipeline position:
+- Verdict:
+- What works:
+- Missing or weak mechanisms:
+- Duplication or boundary risks:
+- Source-of-truth / grill-me risks:
+- UX/UI quality risks, if relevant:
+- Recommended fixes:
+
+## Artifact Separation Matrix
+
+Create a table:
+
+| Artifact | Owns | Must Not Own | Current Boundary Quality | Risks | Fix |
+|---|---|---|---|---|---|
+
+## External Mechanism Fit Matrix
+
+Create a table:
+
+| Created Skill | Output Artifact | Main Responsibility | Relevant External Mechanisms | What Is Good | What Is Missing | Recommended Fix |
+|---|---|---|---|---|---|---|
+
+## UX/UI Quality Risks
+
+Focus especially on whether `to-wireframes` and `to-ux-ui-brief` can actually lead to a high-quality product UI.
+
+## Grill-Me And Source-Of-Truth Risks
+
+Explain whether the skills truly prevent invention, hidden assumptions, and premature file creation.
+
+## SDD vs TDD Risks
+
+Explain whether any imported planning/testing mechanism accidentally pushes the process toward TDD rather than SDD.
+
+## Critical Findings
+
+Use this format:
+
+- `[Critical] file:line` Finding title.
+  - Problem:
+  - Why it matters:
+  - External mechanism to use:
+  - Exact fix:
+
+## High Findings
+
+Same format.
+
+## Medium Findings
+
+Same format.
+
+## Low Findings
+
+Same format.
+
+## Prioritized Fix List
+
+### Critical
+
+### High
+
+### Medium
+
+### Low
+
+## Final Recommendation
+
+Say whether these skills should be used as-is, patched first, or redesigned.
+```
+
+## Hard Rules For This Audit
+
+- Do not modify files in this run.
+- Do not claim a source was inspected unless it was actually opened and read.
+- Do not infer external skill content from the name alone.
+- Do not give generic quality praise.
+- Do not propose adding more documents unless absolutely necessary.
+- Prefer patching the existing 7 skills over expanding the pipeline.
+- Preserve the user's SDD goal: PRD to high-quality UX/UI to implementation planning.
+- The user values directness over politeness. Be precise and useful.

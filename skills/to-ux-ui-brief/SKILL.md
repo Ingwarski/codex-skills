@@ -1,0 +1,188 @@
+---
+name: to-ux-ui-brief
+description: Use when docs/wireframes.md exists and the next SDD artifact should define the product's UX/UI direction, visual system, experience spine, interaction rules, responsive behavior, and design handoff.
+---
+# to-ux-ui-brief
+
+## Universal SDD Rule
+AI is not the source of truth. Source files and explicit user answers are the source of truth.
+
+If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+
+For aesthetic direction, the assistant may propose 2-3 clearly labeled options during gap-check, but the final brief must use only a direction supported by source files or explicitly selected by the user.
+
+Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/ux-ui-brief.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
+
+## Input
+Read:
+- `README.md`
+- `docs/product-idea.md`
+- `docs/prd.md`
+- `docs/user-journey.md`
+- `docs/screen-map.md`
+- `docs/wireframes.md`
+- `docs/terminology.md`, if present
+- `docs/project-principles.md`, if present
+- `docs/guardrails.md`, if present
+
+## Output
+Create or update exactly one artifact:
+- `docs/ux-ui-brief.md`
+
+Do not modify unrelated files.
+
+## Artifact Boundary
+`docs/ux-ui-brief.md` owns:
+- UX/UI design intent
+- visual direction
+- design brief
+- design decision log
+- information density and interface tone
+- semantic design tokens
+- typography direction
+- color direction
+- spacing and layout rhythm
+- component appearance principles
+- interaction feel
+- responsive behavior
+- accessibility floor
+- design handoff guidance
+
+It must not define:
+- new product features
+- new screens or routes
+- detailed wireframe structure already owned by `docs/wireframes.md`
+- QA checklist items
+- implementation tasks
+
+Reference prior artifacts instead of restating them.
+
+## Proven Mechanics To Use
+Adapt the strongest UX Coach mechanics into a single SDD artifact:
+- Treat the brief as two spines inside one file: `Design Spine` and `Experience Spine`.
+- The Design Spine is the visual contract: brand/style, colors, typography, spacing, radius, elevation, component appearance, visual do/don't rules.
+- The Experience Spine is the behavior contract: form factor, IA implications, voice/tone rules, component behavior, state patterns, interaction primitives, accessibility, key flows.
+- Spines win over mockups. Wireframes, screenshots, Stitch output, v0 output, or Figma explorations are illustrations, not the source of truth.
+- Keep a `Decision Log` for selected directions, rejected directions, scope cuts, tool choices, and user overrides.
+- Run a concern scan: accessibility, platform conventions, brand voice, regulated language, motion, internationalization, dark mode, offline behavior, content density, input modalities, notifications, AI control and reversibility.
+- Surface UI system inheritance. If shadcn, MUI, Tailwind, native UIKit, Compose, or an internal design system exists, extend or reference it instead of inventing a parallel system.
+- Use visual-first structures where useful: token tables, state matrices, component spec tables, Mermaid flow diagrams, and small swatch/type/spacing examples.
+- When current UI systems, accessibility standards, platform HIGs, or named visual references may have changed, verify them with current sources before creating or updating the artifact.
+
+Use the strongest production UX/UI mechanics:
+- Start from user goal, audience, primary action, and product context.
+- Match experience type: SaaS/operational tool, checkout, AI product, course/content, dashboard, landing/sales, mobile app, internal tool, or regulated workflow.
+- Preserve existing design systems unless the user explicitly wants a redesign.
+- Define complete states: default, hover, focus, active, disabled, loading, empty, error, success, long-content, offline, and permission-denied when relevant.
+- Meet WCAG 2.2 AA by default: contrast, visible focus, keyboard access, semantic structure, labels, errors, target sizes, and reduced-motion support.
+- Plan responsive behavior at 390, 430, 768, 1280, and 1440px unless sources specify different target devices.
+- Avoid one-note palettes, decorative blobs, meaningless gradients, hidden scrollbars, card-in-card layouts, and visual trend choices that weaken usability.
+
+## Gap-Check
+Before writing, verify that sources identify:
+- target audience and product category
+- brand or desired product feeling
+- platform and device priorities
+- complexity and information-density needs
+- accessibility expectations
+- visual constraints, if any
+- existing design system, visual source, brand deck, screenshots, tokens, component library, or inspiration/rejection references
+- expected interactivity and motion level
+- whether the user wants a fast path with explicit assumptions or a coached path with decisions resolved section by section
+
+If visual direction, audience, density, or platform priorities are missing or contradictory, stop and ask grill-me questions before producing the output.
+
+## Workflow
+1. Inspect the input files.
+2. Find grounding material before inventing: design docs, screenshots, Figma links, Storybook, tokens, components, CSS variables, brand assets, or reference products named by the user.
+3. Extract UX intent from the PRD, user journey, screen map, and wireframes.
+4. Identify the product type, stakes, form factor, and level of visual sophistication needed.
+5. Run the concern scan and decide which concerns deserve sections.
+6. Define a source-backed Design Spine.
+7. Define a source-backed Experience Spine.
+8. Define semantic tokens and component appearance principles without overbuilding a design-system monster.
+9. Define responsive, accessibility, state, and interaction expectations.
+10. Add handoff prompts or guidance for Figma, v0, Stitch, or Codex only when useful and only from captured content.
+11. Run the validation pass before creating or updating the artifact.
+12. Avoid changing scope, adding screens, or rewriting wireframes.
+13. Create or update only `docs/ux-ui-brief.md`.
+
+## Required Output Structure
+Use this structure:
+
+```markdown
+# UX/UI Brief
+
+## Source References
+
+## Design Brief
+
+## Decision Log
+
+## Audience And Context
+
+## Product Experience Goal
+
+## Concern Scan
+
+## Design Spine
+
+### Brand And Style
+
+### Colors
+
+### Typography
+
+### Layout And Spacing
+
+### Elevation And Depth
+
+### Shapes
+
+### Component Appearance
+
+### Visual Do's And Don'ts
+
+## Experience Spine
+
+### Foundation
+
+### Information Architecture Implications
+
+### Voice And Tone
+
+### Component Behavior
+
+### State Patterns
+
+### Interaction Primitives
+
+### Accessibility Floor
+
+### Key Flow Implications
+
+## Design Tokens
+
+## Responsive And Platform Behavior
+
+## Design Handoff Prompt
+
+## Validation Report
+
+## Confirmed Design Decisions
+
+## Rejected Directions
+
+## Out Of Scope
+
+## Open Questions
+```
+
+## Final Report
+Return:
+- `Result`
+- `Created/Updated File`
+- `Confirmed Design Decisions`
+- `Open Questions`
+- `Next Recommended Action`
+- `Next Recommended Skill`
