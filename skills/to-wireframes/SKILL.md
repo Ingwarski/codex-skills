@@ -1,15 +1,17 @@
 ---
 name: to-wireframes
-description: Use when docs/screen-map.md exists and the next SDD artifact should define low-fidelity screen structure, hierarchy, CTAs, fields, and state variants before visual design.
+description: Use when docs/screen-map.md exists and the user wants wireframes, low-fidelity layouts, screen structure, content hierarchy, CTAs, forms, or state variants before visual design.
 ---
 # to-wireframes
 
 ## Universal SDD Rule
-AI is not the source of truth. Source files and explicit user answers are the source of truth.
+AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
 If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/wireframes.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
+
+If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
 
 ## Input
 Read:
@@ -38,6 +40,8 @@ Do not modify unrelated files.
 - state variants per screen
 - interaction notes needed to understand layout behavior
 
+For states: `docs/screen-map.md` owns which states exist per screen - reference its list; this file owns each state's structure only.
+
 It must not define:
 - final colors
 - typography system
@@ -52,6 +56,7 @@ The final product goal is high-quality UX/UI design. This artifact supports that
 
 ## Proven Mechanics To Use
 - Run a design-brief gate before wireframing: confirm what each screen must help the user do, what visual or product system should be respected, and how interactive the final experience is expected to be.
+- Use a concrete notation, not prose. For every screen: an ordered content-zone list with a hierarchy level and priority per zone; an ASCII layout sketch for any screen whose layout is not a single column; state variants expressed as deltas from the default blueprint (for example: "Error: zone 3 replaced by inline message; primary CTA disabled").
 - Prefer source capture over guessing. If an existing product, design system, screenshot, Storybook, component library, or token file exists, use it as grounding material.
 - Differentiate structure before style: vary hierarchy, grouping, interaction model, and CTA emphasis before discussing brand style.
 - Use this separation priority inside wireframes: spacing, grouping, alignment, and hierarchy first; simple dividers second; subtle surface tint third; borders fourth; shadows last.
@@ -79,10 +84,16 @@ If block priority, CTAs, forms, or state behavior are missing or contradictory, 
 5. Define responsive structural behavior only where it affects content priority or interaction.
 6. Preserve traceability to PRD requirements, user journey stages, and screen-map entries.
 7. Avoid adding features, screens, fields, or flows outside approved sources.
-8. Create or update only `docs/wireframes.md`.
+8. Before writing the artifact, verify the planned content:
+   - Every load-bearing claim traces to a named source file or an explicit user answer, or it is moved to `Open Questions`.
+   - No content belongs to another artifact's ownership per the Artifact Boundary.
+   - No placeholder text and no generic filler written to satisfy the template.
+9. Create or update only `docs/wireframes.md`.
 
 ## Required Output Structure
 Use this structure:
+
+Required contract sections are `Source References`, `Wireframe Principles`, `Screen Blueprints`, `State Variants`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
 
 ```markdown
 # Wireframes
@@ -101,7 +112,9 @@ Use this structure:
 
 ## Content Priority Notes
 
-## Notes For UX/UI Brief
+## Cross-Screen Notes For UX/UI Brief
+
+Only notes that span multiple screens. Per-screen notes belong in each blueprint.
 
 ## Open Questions
 ```
@@ -122,6 +135,7 @@ Return:
 - `Result`
 - `Created/Updated File`
 - `Confirmed Facts And Constraints`
+- `Omitted Optional Sections`, if any
 - `Open Questions`
 - `Next Recommended Action`
 - `Next Recommended Skill`

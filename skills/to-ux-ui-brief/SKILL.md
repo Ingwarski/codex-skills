@@ -1,17 +1,19 @@
 ---
 name: to-ux-ui-brief
-description: Use when docs/wireframes.md exists and the next SDD artifact should define the product's UX/UI direction, visual system, experience spine, interaction rules, responsive behavior, and design handoff.
+description: Use when docs/wireframes.md exists and the user wants the UX/UI brief, design direction, visual system, design tokens, typography and color direction, interaction rules, or design handoff.
 ---
 # to-ux-ui-brief
 
 ## Universal SDD Rule
-AI is not the source of truth. Source files and explicit user answers are the source of truth.
+AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
 If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
 
 For aesthetic direction, the assistant may propose 2-3 clearly labeled options during gap-check, but the final brief must use only a direction supported by source files or explicitly selected by the user.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/ux-ui-brief.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
+
+If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report. For this skill, UX/UI direction is usually synthesis, so playback is expected unless the exact visual direction was already confirmed.
 
 ## Input
 Read:
@@ -48,6 +50,8 @@ Do not modify unrelated files.
 - accessibility floor
 - design handoff guidance
 
+For states: `docs/screen-map.md` owns which states exist per screen; `docs/wireframes.md` owns each state's structure; this file owns system-wide state appearance and behavior patterns. Reference the screen-map state list; do not re-derive it.
+
 It must not define:
 - new product features
 - new screens or routes
@@ -75,6 +79,7 @@ Use the strongest production UX/UI mechanics:
 - Preserve existing design systems unless the user explicitly wants a redesign.
 - Define complete states: default, hover, focus, active, disabled, loading, empty, error, success, long-content, offline, and permission-denied when relevant.
 - Meet WCAG 2.2 AA by default: contrast, visible focus, keyboard access, semantic structure, labels, errors, target sizes, and reduced-motion support.
+- When project principles or user policy define font constraints, verify font licensing and provenance before selection. If provenance cannot be confidently verified, prefer system stacks or verified independent foundries.
 - Plan responsive behavior at 390, 430, 768, 1280, and 1440px unless sources specify different target devices.
 - Avoid one-note palettes, decorative blobs, meaningless gradients, hidden scrollbars, card-in-card layouts, and visual trend choices that weaken usability.
 
@@ -100,15 +105,37 @@ If visual direction, audience, density, or platform priorities are missing or co
 5. Run the concern scan and decide which concerns deserve sections.
 6. Define a source-backed Design Spine.
 7. Define a source-backed Experience Spine.
-8. Define semantic tokens and component appearance principles without overbuilding a design-system monster.
-9. Define responsive, accessibility, state, and interaction expectations.
-10. Add handoff prompts or guidance for Figma, v0, Stitch, or Codex only when useful and only from captured content.
-11. Run the validation pass before creating or updating the artifact.
-12. Avoid changing scope, adding screens, or rewriting wireframes.
-13. Create or update only `docs/ux-ui-brief.md`.
+8. Critique the planned Design Spine against generic AI defaults: templated palettes, interchangeable type pairings, decorative filler, and styles that could belong to any product in the category. Name one signature element or one deliberate restraint principle grounded in the product's domain, and state where the design spends or withholds boldness. If the direction is not product-specific, revise it or raise clearly labeled aesthetic options for the user to select.
+9. Define semantic tokens and component appearance principles without overbuilding a design-system monster.
+10. Define responsive, accessibility, state, and interaction expectations.
+11. Add handoff prompts or guidance for Figma, v0, Stitch, or Codex only when useful and only from captured content.
+12. Run the Validation Pass defined below before creating or updating the artifact.
+13. Avoid changing scope, adding screens, or rewriting wireframes.
+14. Before writing the artifact, verify the planned content:
+   - Every load-bearing claim traces to a named source file or an explicit user answer, or it is moved to `Open Questions`.
+   - No content belongs to another artifact's ownership per the Artifact Boundary.
+   - No placeholder text and no generic filler written to satisfy the template.
+15. Create or update only `docs/ux-ui-brief.md`.
+
+## Validation Pass
+Run both passes on the planned artifact content. Record results in the artifact's `Validation Report` as findings ranked by downstream impact: Critical, High, Medium, Low. If a pass has no findings, state `0 findings` for that pass.
+
+Pass 1 - Mechanical coverage:
+- Every key flow referenced names its journey source and has success and failure coverage in the Experience Spine.
+- Every token referenced anywhere in the brief resolves to a defined value in the Design Spine.
+- Every component named in either spine has both an appearance principle and a behavior principle.
+- Every screen and state in `docs/screen-map.md` is covered by a state pattern or explicitly deferred with a reason.
+- Every visual reference, link, or source named in the brief resolves; unavailable sources are flagged, never silently dropped.
+
+Pass 2 - Judgment:
+- Bloat: no pixel specs where tokens suffice, no decorative prose, no sections filled to satisfy the template.
+- Inheritance: named UI systems, versions, and source terminology are used faithfully; no parallel system is invented.
+- Shape: sections follow the required structure; spines stay contracts, not restated wireframes.
 
 ## Required Output Structure
 Use this structure:
+
+Required contract sections are `Source References`, `Design Brief`, `Decision Log`, `Product Experience Goal`, `Design Spine`, `Experience Spine`, `Validation Report`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
 
 ```markdown
 # UX/UI Brief
@@ -127,6 +154,8 @@ Use this structure:
 
 ## Design Spine
 
+Token values live only in `### Design Tokens`; other spine sections reference tokens by name instead of repeating values.
+
 ### Brand And Style
 
 ### Colors
@@ -142,6 +171,8 @@ Use this structure:
 ### Component Appearance
 
 ### Visual Do's And Don'ts
+
+### Design Tokens
 
 ## Experience Spine
 
@@ -160,8 +191,6 @@ Use this structure:
 ### Accessibility Floor
 
 ### Key Flow Implications
-
-## Design Tokens
 
 ## Responsive And Platform Behavior
 
@@ -183,6 +212,7 @@ Return:
 - `Result`
 - `Created/Updated File`
 - `Confirmed Design Decisions`
+- `Omitted Optional Sections`, if any
 - `Open Questions`
 - `Next Recommended Action`
 - `Next Recommended Skill`
