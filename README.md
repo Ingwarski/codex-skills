@@ -59,9 +59,9 @@ The documents are intentionally separated:
 - `wireframes.md` owns screen structure and state structure.
 - `ux-ui-brief.md` owns visual and experience direction.
 - `architecture.md` owns system architecture, module boundaries, data/state model, integrations, runtime model, and architecture decisions.
-- `dod-evals.md` owns Definition of Done, reusable gates, eval result format, evidence requirements, and completion rules.
-- `guardrails.md` owns AI behavior and source-of-truth policy.
-- `qa-checklist.md` owns verification checks and evidence artifacts.
+- `dod-evals.md` owns Definition of Done, reusable gates, eval result format, completion evidence requirements, and completion rules.
+- `guardrails.md` owns AI behavior, source-of-truth policy, and behavioral evidence policy.
+- `qa-checklist.md` owns concrete verification checks and per-check evidence artifacts.
 - `development-plan.md` owns implementation units and build order.
 
 If one artifact needs information from another, it should cite or reference that artifact rather than restating it.
@@ -126,7 +126,9 @@ Use to-development-plan for this project.
 
 `to-guardrails` can also be run earlier, any time after `docs/prd.md` exists. Running it before design artifacts is useful when you want the whole pipeline constrained by explicit AI behavior rules. Re-run it later after UX artifacts exist if design-authority rules need to be added.
 
-`to-architecture` and `to-dod-evals` should run before `to-qa-checklist` and `to-development-plan` when the product needs architecture and completion gates as source-of-truth documents. `to-qa-checklist` verifies those contracts; it does not replace them.
+`to-architecture` and `to-dod-evals` should run before `to-qa-checklist` and `to-development-plan` when the product needs architecture and completion gates as source-of-truth documents. `to-dod-evals` requires an approved `docs/architecture.md`; if a tiny project does not need separate architecture or completion artifacts, skip both and keep that decision explicit in downstream `Open Questions`. `to-qa-checklist` verifies those contracts; it does not replace them.
+
+Keep the chain skippable rather than ceremonial for tiny projects: run optional artifacts only when their owned decisions are needed as source truth.
 
 ## What Happens When Information Is Missing
 
@@ -172,7 +174,7 @@ Release readiness is binary:
 
 `to-development-plan` is SDD-first. Tests and verification support the approved spec, but they do not become the source of product truth.
 
-`to-dod-evals` separates acceptance criteria from Definition of Done. Acceptance criteria confirm that a specific item was built correctly; DoD/eval gates define the standing completion bar and evidence required before anything can be called done.
+`to-dod-evals` separates acceptance criteria from Definition of Done. Acceptance criteria confirm that a specific item was built correctly; DoD/eval gates define the standing completion bar and evidence required before anything can be called done. A mockup, screenshot, prototype, or visually convincing static surface is design/visual evidence only; it is not completed functionality unless connected to source-backed behavior, real state/data/actions, runner evidence, and required DoD gates.
 
 ## Authoring References
 

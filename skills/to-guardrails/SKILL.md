@@ -43,8 +43,9 @@ Do not modify unrelated files.
 - when to stop
 - verification expectations
 - document separation rules
+- mockup, prototype, screenshot, and static-surface limits for completion claims
 
-This file owns the evidence policy: when evidence is required and what counts as evidence. Per-check evidence artifacts belong to `docs/qa-checklist.md`, which cites this policy instead of restating it.
+This file owns the behavioral evidence policy: when the AI must verify, what counts as evidence, and when missing evidence must stop work. `docs/dod-evals.md` owns the reusable completion/eval contract: which gates and evidence make work Done. `docs/qa-checklist.md` owns concrete per-release or per-screen checks and per-check evidence artifacts that cite both.
 
 It must not define:
 - user journey content
@@ -59,6 +60,7 @@ Other artifacts may follow these rules, but they must not duplicate this documen
 ## Proven Mechanics To Use
 - Evidence before claims, as an operational gate: identify what proves the claim, run it fresh, read the full output, and only then state the result with the evidence. No success, completion, quality, or compliance claim without this sequence.
 - Spines and source docs win over generated mockups, implementation guesses, and assistant preference.
+- A mockup, screenshot, prototype, or visually convincing static surface is design/visual evidence only; it is not completed functionality unless connected to source-backed behavior, real state/data/actions, runner evidence, and required DoD gates.
 - Extract, do not ingest: when sources are long, pull only the relevant decisions and cite them. Do not paraphrase entire source files into this artifact.
 - Right-size rigor to stakes: hobby, internal, consumer, paid, regulated, accessibility-critical, or safety-sensitive products need different guardrails.
 - Define what the AI may decide alone, what it may propose but not finalize, and what requires explicit user approval.
@@ -74,6 +76,7 @@ Before writing, verify that sources identify:
 - what is forbidden
 - how conflicts should be resolved
 - required verification standard
+- where visual/static evidence ends and functionality evidence begins
 - which visual/design sources are authoritative, if any
 - whether AI may propose aesthetic options or must wait for user-provided direction
 
@@ -95,12 +98,13 @@ Sources rarely state guardrails explicitly. Do not run an open-ended interview. 
 6. Define visual/design authority rules.
 7. Define conflict resolution and stop conditions.
 8. Define verification rules for SDD artifacts and future implementation.
-9. Preserve strict artifact separation.
-10. Before writing the artifact, verify the planned content:
+9. Define mockup, prototype, screenshot, and static-surface limits for completion claims.
+10. Preserve strict artifact separation.
+11. Before writing the artifact, verify the planned content:
    - Every load-bearing rule traces to a named source file or an explicit user answer, or it is moved to `Open Questions`.
    - No content belongs to another artifact's ownership per the Artifact Boundary.
    - No placeholder text and no generic filler written to satisfy the template.
-11. Create or update only `docs/guardrails.md`.
+12. Create or update only `docs/guardrails.md`.
 
 ## Required Output Structure
 Use this structure:

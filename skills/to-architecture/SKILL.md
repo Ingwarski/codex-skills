@@ -63,6 +63,7 @@ Adapt the useful parts of proven architecture/documentation skills without impor
 - From `breakdown-epic-arch`: use a high-level architecture diagram and identify technical enablers, but do not hard-code any stack or epic path.
 - From durable architecture-doc patterns: make the document useful for future agents so they do not re-derive architecture every session.
 - From SDD guardrails: source docs and confirmed code win over assistant preference, generated mockups, or generic stack defaults.
+- Static design artifacts can inform UI architecture boundaries, but they cannot prove runtime behavior, real state/data/actions, or completed functionality.
 
 Do not copy these source skills wholesale:
 - Do not write `tad.md`; write `docs/architecture.md`.

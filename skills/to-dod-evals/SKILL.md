@@ -41,7 +41,7 @@ Do not modify unrelated files.
 - hard gates, unit checks, system checks, UX/UI checks, and release gates
 - lane/state promotion gates when the product has workflow states
 - eval result format
-- evidence requirements
+- completion evidence requirements
 - failure and blocker classification
 - rerun, recovery, PR, merge, and completion rules
 
@@ -54,7 +54,7 @@ It must not define:
 - per-screen QA checklist details
 - implementation units or task breakdown
 
-`docs/qa-checklist.md` owns concrete checklist items for a specific product artifact or release. `docs/dod-evals.md` owns the reusable DoD/eval contract those checklist items cite.
+`docs/guardrails.md` owns the behavioral evidence policy: when the AI must verify, what counts as evidence, and when missing evidence must stop work. `docs/dod-evals.md` uses that policy to define the reusable completion/eval contract and gate-specific evidence required for Done. `docs/qa-checklist.md` owns concrete checklist items and per-check evidence artifacts for a specific product artifact or release.
 
 ## Proven Mechanics To Use
 Adapt the useful parts of proven DoD, quality-gate, planning, and eval references:
@@ -64,6 +64,7 @@ Adapt the useful parts of proven DoD, quality-gate, planning, and eval reference
 - From `breakdown-plan`: define DoD at useful levels such as product, feature/unit, story/task, enabler, and test where sources support those levels.
 - From eval/lane-gate patterns: attach eval definitions to workflow state transitions; a lane promotion is blocked until required evals pass; evals have standard result shape and persistable evidence.
 - From SDD guardrails: source docs and confirmed code win over agent self-assessment.
+- Treat mockups, screenshots, prototypes, and visually convincing static surfaces as design/visual evidence only. They do not prove completed functionality unless connected to source-backed behavior, real state/data/actions, runner evidence, and required DoD gates.
 
 Do not copy these source skills wholesale:
 - Do not turn this into a command runner. This skill writes the DoD/evals source-of-truth document; it does not execute gates.
@@ -105,6 +106,7 @@ Before writing, verify that sources or code identify:
 - UX/UI verification expectations
 - PR, merge, branch, commit, or release rules, if relevant
 - what evidence counts for completion claims
+- whether UI/design evidence is connected to real behavior, state, data, and actions when functionality is claimed
 - failure classes and blocker handling
 - which checks can be automated now versus later
 
@@ -123,7 +125,7 @@ Ask DoD/eval questions with recommended answers based on sources. Prefer:
 4. Extract architecture-driven verification needs from `docs/architecture.md`.
 5. Separate acceptance criteria, DoD, QA checklist items, and implementation tasks.
 6. Define the standing DoD model.
-7. Define verification profile tiers: hard gates, unit checks, system checks, UX/UI checks, evidence, and release/merge checks.
+7. Define verification profile tiers: hard gates, unit checks, system checks, UX/UI checks, evidence, static-surface limits, and release/merge checks.
 8. Define lane/state promotion gates when the product has workflow states or Kanban-like transitions.
 9. Define eval result format with pass/fail/blocked status, evidence, owner, timestamp/source, and rerun rule.
 10. Define failure and blocker classification without duplicating `docs/qa-checklist.md`.
