@@ -174,6 +174,27 @@ Release readiness is binary:
 
 `to-dod-evals` separates acceptance criteria from Definition of Done. Acceptance criteria confirm that a specific item was built correctly; DoD/eval gates define the standing completion bar and evidence required before anything can be called done.
 
+## Authoring References
+
+The skills are custom SDD skills, but they intentionally reuse proven mechanisms from existing skills and references.
+
+For `to-architecture`, the main authoring references were:
+
+- `tad-generator`: `https://github.com/luongnv89/skills/blob/main/skills/tad-generator/SKILL.md`
+- `documentation-and-adrs`: `https://github.com/addyosmani/agent-skills/blob/main/skills/documentation-and-adrs/SKILL.md`
+- `breakdown-epic-arch`: `https://github.com/github/awesome-copilot/blob/main/skills/breakdown-epic-arch/SKILL.md`
+- `eatmycode`: `https://github.com/xwings/eatmycode`
+
+For `to-dod-evals`, the main authoring references were:
+
+- `definition-of-done`: `https://raw.githubusercontent.com/addyosmani/agent-skills/main/references/definition-of-done.md`
+- `quality-run-quality-gates`: `https://github.com/dawiddutoit/custom-claude/blob/main/skills/quality-run-quality-gates/SKILL.md`
+- `verification-before-completion`: `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/verification-before-completion/SKILL.md`
+- `breakdown-plan`: `https://github.com/github/awesome-copilot/blob/main/skills/breakdown-plan/SKILL.md`
+- Hermes eval/lane-gate proposal: `https://github.com/NousResearch/hermes-agent/issues/44000`
+
+These references are authoring provenance, not product source files. During a project run, each skill must still use only its declared input files and explicit user answers as product truth.
+
 ## Repository Contents
 
 ```text

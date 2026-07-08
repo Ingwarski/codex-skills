@@ -70,6 +70,26 @@ Do not copy these source skills wholesale:
 - Do not force startup cost estimates, specific hosted infrastructure, React/Next/tRPC, Docker, PostgreSQL, Redis, or any stack choice unless sources or code confirm them.
 - Do not browse for "latest best stack" unless a named external platform, standard, or package version is required and likely current.
 
+## Authoring References Used
+These references were used to design this skill. They are not product source files for a project run; product truth still comes only from the Input files and explicit user answers.
+
+- `tad-generator`: `https://github.com/luongnv89/skills/blob/main/skills/tad-generator/SKILL.md`
+  - Used: PRD extraction, architecture clarification, system overview, Mermaid diagram, stack/components/data/infrastructure/security/performance/risk coverage, artifact acceptance checks.
+  - Not used: `tad.md` output path, automatic git sync/commit/push, README index updates, startup cost defaults, and forced stack assumptions.
+- `documentation-and-adrs`: `https://github.com/addyosmani/agent-skills/blob/main/skills/documentation-and-adrs/SKILL.md`
+  - Used: document why, alternatives considered, decision consequences, ADR-style decision log.
+  - Not used: separate ADR file workflow under `docs/decisions/`, because this skill creates one artifact only.
+- `breakdown-epic-arch`: `https://github.com/github/awesome-copilot/blob/main/skills/breakdown-epic-arch/SKILL.md`
+  - Used: high-level architecture specification shape, Mermaid architecture diagram, technical enabler thinking.
+  - Not used: hard-coded TypeScript/Next.js/tRPC/Turborepo/Docker/Stack Auth assumptions and epic-specific output path.
+- `eatmycode`: `https://github.com/xwings/eatmycode`
+  - Used: durable architecture documentation as a future-agent alignment surface.
+  - Not used: multi-file `ARCHITECTURE.md` plus `ARCHITECTURE/<module>.md` structure, because this pipeline uses one output artifact per skill.
+- Existing local SDD skills in this repository:
+  - `skills/to-guardrails/SKILL.md`
+  - `skills/to-development-plan/SKILL.md`
+  - Used: Universal SDD Rule, one-artifact output contract, artifact boundary format, source-backed/open-question behavior, and Final Report shape.
+
 ## Gap-Check
 Before writing, verify that sources or code identify:
 - product scope and architectural drivers

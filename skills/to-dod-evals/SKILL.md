@@ -72,6 +72,30 @@ Do not copy these source skills wholesale:
 - Do not claim WCAG, security, performance, or compliance guarantees from static docs alone.
 - Do not invent CI scripts, package scripts, eval harnesses, PR rules, or deployment gates when sources or code do not support them.
 
+## Authoring References Used
+These references were used to design this skill. They are not product source files for a project run; product truth still comes only from the Input files and explicit user answers.
+
+- `definition-of-done`: `https://raw.githubusercontent.com/addyosmani/agent-skills/main/references/definition-of-done.md`
+  - Used: acceptance criteria vs Definition of Done distinction, standing reusable DoD, correctness/quality/integration/documentation/ship-readiness sections, and red flags against declaring done too early.
+  - Not used: one-size-fits-all checklist as final content; project-specific source files still decide what belongs in `docs/dod-evals.md`.
+- `quality-run-quality-gates`: `https://github.com/dawiddutoit/custom-claude/blob/main/skills/quality-run-quality-gates/SKILL.md`
+  - Used: gate detection mindset, pass/fail reporting, rerun-after-fix loop, and "Definition of Done met/not met" blocking semantics.
+  - Not used: command-runner behavior, tool-specific scripts, or executing gates during artifact creation.
+- `verification-before-completion`: `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/verification-before-completion/SKILL.md`
+  - Used: evidence before claims, identify/run/read/verify gate function, no completion claim without fresh evidence.
+  - Not used: runtime execution as the artifact output; this skill writes the reusable DoD/eval contract.
+- `breakdown-plan`: `https://github.com/github/awesome-copilot/blob/main/skills/breakdown-plan/SKILL.md`
+  - Used: DoD at multiple planning levels, acceptance criteria plus Definition of Done, dependency and gate thinking.
+  - Not used: GitHub project automation, issue hierarchy output, sprint/project-management artifacts.
+- Hermes eval/lane-gate proposal: `https://github.com/NousResearch/hermes-agent/issues/44000`
+  - Used: eval definitions attached to lane/state transitions, standard eval result shape, quality contract over agent self-assessment.
+  - Not used: Hermes-specific architecture, cron/memory/CLI implementation proposals.
+- Existing local SDD skills in this repository:
+  - `skills/to-guardrails/SKILL.md`
+  - `skills/to-qa-checklist/SKILL.md`
+  - `skills/to-development-plan/SKILL.md`
+  - Used: Universal SDD Rule, one-artifact output contract, evidence policy separation, artifact boundaries, severity/release-readiness separation, and Final Report shape.
+
 ## Gap-Check
 Before writing, verify that sources or code identify:
 - product acceptance criteria or success conditions
