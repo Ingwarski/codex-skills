@@ -36,7 +36,7 @@ Do not modify unrelated files.
 - empty, loading, error, success, and permission states
 - links from screens to PRD requirements and journey stages
 
-This file is the canonical owner of which states exist per screen. Wireframes own each state's structure; the UX/UI brief owns system-wide state appearance and behavior; the QA checklist verifies this list. Later artifacts reference this list instead of re-deriving it.
+This file is the canonical owner of which states exist per screen. Wireframes own each state's structure; the design brief owns system-wide state appearance and behavior; the QA checklist verifies this list. Later artifacts reference this list instead of re-deriving it.
 
 It must not define:
 - detailed screen layouts

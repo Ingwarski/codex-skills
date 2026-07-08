@@ -13,7 +13,7 @@ to-prd
 -> to-user-journey
 -> to-screen-map
 -> to-wireframes
--> to-ux-ui-brief
+-> to-design-brief
 -> to-architecture
 -> to-dod-evals
 -> to-guardrails
@@ -30,7 +30,7 @@ to-prd
 | `to-user-journey` | `docs/user-journey.md` | Maps the real user, goal, context, journey stages, friction, decisions, failure path, and success state. |
 | `to-screen-map` | `docs/screen-map.md` | Defines screens, surfaces, routes, navigation, transitions, entry/exit points, and the canonical state list per screen. |
 | `to-wireframes` | `docs/wireframes.md` | Converts the screen map into low-fidelity screen structures, hierarchy, CTAs, forms, content zones, and state variants. |
-| `to-ux-ui-brief` | `docs/ux-ui-brief.md` | Defines the UX/UI direction, Design Spine, Experience Spine, visual system, interaction rules, responsive behavior, accessibility floor, and design handoff guidance. |
+| `to-design-brief` | `docs/design-brief.md` | Defines the UX/UI direction, Design Spine, Experience Spine, visual system, interaction rules, responsive behavior, accessibility floor, and design handoff guidance. |
 | `to-architecture` | `docs/architecture.md` | Defines system architecture, modules, boundaries, data/state model, integrations, runtime model, architecture decisions, and risks. |
 | `to-dod-evals` | `docs/dod-evals.md` | Defines Definition of Done, reusable eval gates, verification profile, evidence requirements, state/lane gates, and PR/merge completion rules. |
 | `to-guardrails` | `docs/guardrails.md` | Defines source-of-truth order, AI autonomy boundaries, scope limits, conflict handling, stop conditions, and verification policy. |
@@ -57,7 +57,7 @@ The documents are intentionally separated:
 - `user-journey.md` owns user behavior and journey logic.
 - `screen-map.md` owns which screens and states exist.
 - `wireframes.md` owns screen structure and state structure.
-- `ux-ui-brief.md` owns visual and experience direction.
+- `design-brief.md` owns visual and experience direction.
 - `architecture.md` owns system architecture, module boundaries, data/state model, integrations, runtime model, and architecture decisions.
 - `dod-evals.md` owns Definition of Done, reusable gates, eval result format, completion evidence requirements, and completion rules.
 - `guardrails.md` owns AI behavior, source-of-truth policy, and behavioral evidence policy.
@@ -77,7 +77,7 @@ mkdir -p ~/.codex/skills
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-user-journey" ~/.codex/skills/to-user-journey
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-screen-map" ~/.codex/skills/to-screen-map
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-wireframes" ~/.codex/skills/to-wireframes
-ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-ux-ui-brief" ~/.codex/skills/to-ux-ui-brief
+ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-design-brief" ~/.codex/skills/to-design-brief
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-architecture" ~/.codex/skills/to-architecture
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-dod-evals" ~/.codex/skills/to-dod-evals
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-guardrails" ~/.codex/skills/to-guardrails
@@ -116,7 +116,7 @@ Then:
 ```text
 Use to-screen-map for this project.
 Use to-wireframes for this project.
-Use to-ux-ui-brief for this project.
+Use to-design-brief for this project.
 Use to-architecture for this project.
 Use to-dod-evals for this project.
 Use to-guardrails for this project.
@@ -150,10 +150,10 @@ The UX/UI part of the chain is built around proven product-design mechanisms:
 - real user journeys instead of feature lists;
 - surface closure between journeys and screens;
 - concrete wireframe notation rather than vague layout prose;
-- a Design Spine and Experience Spine in `ux-ui-brief.md`;
+- a Design Spine and Experience Spine in `design-brief.md`;
 - visual-system inheritance when a project already has tokens, components, or a design system;
 - accessibility and responsive behavior as default requirements;
-- validation before the UX/UI brief is written;
+- validation before the design brief is written;
 - a distinctiveness check so the design does not collapse into generic AI UI.
 
 For operational products, a deliberate restraint principle can be the right design decision. The skills should not force decorative design when the product needs density, clarity, and repeat-use efficiency.
@@ -207,7 +207,7 @@ skills/
     SKILL.md
   to-wireframes/
     SKILL.md
-  to-ux-ui-brief/
+  to-design-brief/
     SKILL.md
   to-architecture/
     SKILL.md

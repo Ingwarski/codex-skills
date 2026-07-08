@@ -1,8 +1,8 @@
 ---
-name: to-ux-ui-brief
-description: Use when docs/wireframes.md exists and the user wants the UX/UI brief, design direction, visual system, design tokens, typography and color direction, interaction rules, or design handoff.
+name: to-design-brief
+description: Use when docs/wireframes.md exists and the user wants the design brief, design direction, visual system, design tokens, typography and color direction, interaction rules, or design handoff.
 ---
-# to-ux-ui-brief
+# to-design-brief
 
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
@@ -11,7 +11,7 @@ If blocker-level information is missing from the source files, do not create or 
 
 For aesthetic direction, the assistant may propose 2-3 clearly labeled options during gap-check, but the final brief must use only a direction supported by source files or explicitly selected by the user.
 
-Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/ux-ui-brief.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
+Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/design-brief.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
 
 If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report. For this skill, UX/UI direction is usually synthesis, so playback is expected unless the exact visual direction was already confirmed.
 
@@ -26,12 +26,12 @@ Read:
 
 ## Output
 Create or update exactly one artifact:
-- `docs/ux-ui-brief.md`
+- `docs/design-brief.md`
 
 Do not modify unrelated files.
 
 ## Artifact Boundary
-`docs/ux-ui-brief.md` owns:
+`docs/design-brief.md` owns:
 - UX/UI design intent
 - visual direction
 - design brief
@@ -112,7 +112,7 @@ If visual direction, audience, density, or platform priorities are missing or co
    - Every load-bearing claim traces to a named source file or an explicit user answer, or it is moved to `Open Questions`.
    - No content belongs to another artifact's ownership per the Artifact Boundary.
    - No placeholder text and no generic filler written to satisfy the template.
-15. Create or update only `docs/ux-ui-brief.md`.
+15. Create or update only `docs/design-brief.md`.
 
 ## Validation Pass
 Run both passes on the planned artifact content. Record results in the artifact's `Validation Report` as findings ranked by downstream impact: Critical, High, Medium, Low. If a pass has no findings, state `0 findings` for that pass.
@@ -135,7 +135,7 @@ Use this structure:
 Required contract sections are `Source References`, `Design Brief`, `Decision Log`, `Product Experience Goal`, `Design Spine`, `Experience Spine`, `Validation Report`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
 
 ```markdown
-# UX/UI Brief
+# Design Brief
 
 ## Source References
 

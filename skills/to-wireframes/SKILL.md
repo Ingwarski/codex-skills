@@ -109,7 +109,7 @@ Required contract sections are `Source References`, `Wireframe Principles`, `Scr
 
 ## Content Priority Notes
 
-## Cross-Screen Notes For UX/UI Brief
+## Cross-Screen Notes For Design Brief
 
 Only notes that span multiple screens. Per-screen notes belong in each blueprint.
 
@@ -125,7 +125,7 @@ For each screen blueprint include:
 - `Secondary Actions`
 - `Inputs And Content`
 - `States`
-- `Notes For UX/UI Brief`
+- `Notes For Design Brief`
 
 ## Final Report
 Return:

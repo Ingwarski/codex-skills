@@ -20,7 +20,7 @@ Read:
 - `docs/user-journey.md`, if present
 - `docs/screen-map.md`, if present
 - `docs/wireframes.md`, if present
-- `docs/ux-ui-brief.md`, if present
+- `docs/design-brief.md`, if present
 - `docs/guardrails.md`, if the user deliberately ran `to-guardrails` before this skill
 - `docs/product-idea.md`, only if `docs/prd.md` explicitly names it as an authoritative source or the user asks to use it
 

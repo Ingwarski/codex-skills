@@ -20,7 +20,7 @@ Read:
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
-- `docs/ux-ui-brief.md`
+- `docs/design-brief.md`
 - `docs/architecture.md`, if present from the `to-architecture` step
 - `docs/dod-evals.md`, if present from the `to-dod-evals` step
 - `docs/guardrails.md`, if present from the `to-guardrails` step
@@ -71,7 +71,7 @@ Reference source artifacts instead of repeating their full content.
 - Include complete state checks: default, hover, focus, active, disabled, loading, empty, error, success, long-content, offline, permission-denied, and repeat-click where relevant.
 - Include responsive reflow and zoom resilience checks.
 - Include keyboard access, focus behavior, labels, instructions, errors, target sizes, motion, timing, and state-change communication.
-- For visual QA, compare against source docs, wireframes, UX/UI brief, and any approved mockups. Mockups do not override source docs.
+- For visual QA, compare against source docs, wireframes, design brief, and any approved mockups. Mockups do not override source docs.
 - Assign a severity to every check: P0 blocks core use or is a severe accessibility failure; P1 is a major mismatch or usability regression; P2 is moderate drift or a fixable gap; P3 is polish.
 - Release readiness is binary: `passed` only when no P0-P2 items remain open; otherwise `blocked` with the blockers named. P3 items may remain as follow-up.
 - Use concrete floors as defaults, overridable by sources: touch targets at least 44x44px where touch interaction matters, with at least 8px gaps; text contrast at least 4.5:1 and at least 3:1 for large text in both light and dark themes; mobile input text at least 16px to prevent iOS auto-zoom; body text usually 14-16px depending on product type; visible focus on all interactive elements; no emoji as icons; no horizontal page overflow; reduced-motion respected; breakpoints 390, 430, 768, 1280, and 1440px unless sources specify devices.

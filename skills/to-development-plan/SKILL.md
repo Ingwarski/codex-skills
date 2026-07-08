@@ -20,7 +20,7 @@ Read:
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
-- `docs/ux-ui-brief.md`
+- `docs/design-brief.md`
 - `docs/architecture.md`, if present from the `to-architecture` step
 - `docs/dod-evals.md`, if present from the `to-dod-evals` step
 - `docs/guardrails.md`, if present from the `to-guardrails` step
