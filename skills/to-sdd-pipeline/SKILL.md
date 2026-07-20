@@ -79,7 +79,7 @@ Pause only for:
 
 Artifact playback, validation, preview visibility, candidate recommendation, advisory P2/P3 findings, and ordinary reversible changes are not approval gates.
 
-An owner result of `baseline_change_required` is not a question gate. Invalidate the affected design dependents, generate a revised candidate whole from current sources, and pause only at `awaiting-design-approval` for approval of that revised integrated baseline.
+An owner result of `baseline_change_required` is not a question gate. Invalidate the affected design dependents, generate a revised candidate whole from current sources, and pause only at `awaiting-design-approval` for approval of that revised integrated baseline. If the current source already contains an explicit scoped operator correction and acceptance, persist it as an operator override and reconcile the affected baseline scope without asking the operator to approve the same correction again.
 
 ## Prototype Candidate Contract
 
@@ -89,6 +89,7 @@ For each candidate require:
 - candidate ID and version
 - immutable visual-target reference: rendered artifact/result ID, mockup, screenshot, or frame
 - frozen visual-target content hash
+- frozen prototype source root and source-tree hash
 - source artifact IDs/hashes
 - stable live URL and route
 - covered journey, screens, states, representative data, locale, and viewports
@@ -105,18 +106,18 @@ Treat vendor Work Mode, `terminal.local`, Sites, cloud-browser, or in-app-browse
 
 Normalize `VisualQAEvidence` with adapter/environment, candidate or Baseline ID, target reference/hash, canonical preview URL, route/state/viewport/theme/content fixture, source and implementation capture IDs, interactions checked, console result, QA result, findings with severity and release effect, and timestamp. Retain raw provider reports only as attachments.
 
-Treat image-to-code output as a Phase 2 frontend prototype. It does not prove production auth, persistence, backend/API, integrations, security boundaries, or exhaustive edge cases. Production code may reuse it only through the traced promote/diff contract in `docs/development-plan.md`.
+Treat image-to-code output as a Phase 2 frontend prototype. It does not prove production auth, persistence, backend/API, integrations, security boundaries, or exhaustive edge cases. Production code may reuse it only through the traced promote/diff contract in `docs/development-plan.md`. The Phase 3 runner, not this orchestrator, the planning skill, or implementation-agent prose, owns the resulting `forge/runs/{unit_id}/{run_id}/prototype-promotion.json` receipt derived from the actual Git diff.
 
 For literal URL cloning only, require an authorized `SourceCaptureBundle` before coding. Validate the correct page and reject login/error/blocked/loading/install/promo/redirect captures; record complete small-step desktop scrolling, lazy-loaded and sticky changes, the required mobile viewport, DOM/style/layout evidence, responsive behavior, every visible control and state, and all required images, icons, fonts, videos, SVGs, stylesheets, and other assets. Treat an incomplete bundle as a typed clone blocker. Do not impose exhaustive clone capture on redesign, improvement, or inspiration routes.
 
 ## Baseline And Invalidation
 
-The `Approved Visual Baseline` section of `docs/design-brief.md` is the single canonical baseline manifest. After approval:
-1. re-invoke `to-design-brief` to set `Status: approved`, Baseline ID, candidate/version, prototype references, coverage, receipt, permitted variance, and supersession;
+The `Approved Visual Baseline` section of `docs/design-brief.md` is the single canonical baseline manifest and the visual Definition of Done for user-visible frontend implementation. After approval:
+1. re-invoke `to-design-brief` to set `Status: approved`, Baseline ID, candidate/version, immutable target reference/hash, frozen prototype source root/tree hash, prototype references, coverage, receipt, visual-DoD scope, permitted variance, and supersession;
 2. re-invoke `to-qa-checklist` so concrete visual checks reference the Baseline ID;
 3. invoke `to-development-plan` only after both updates validate.
 
-If a source hash changes, invalidate only transitive dependents. If a later approved whole supersedes the baseline, re-invoke the QA and development-plan owners automatically and mark affected production Feature Units `execution_invalidated` in the manifest/runtime projection. This skill does not own production implementation agents; the DAS Forge Phase 3 runner dispatches them only after the regenerated plan validates. Reconciliation creates no additional approval unless the revised whole materially changes the approved baseline, in which case repeat the one whole-design approval for the new version.
+If a source hash changes, invalidate only transitive dependents. Keep the current approved baseline active and immutable while a revision is merely proposed. Atomically switch the active Baseline ID only when the operator approves a revised integrated whole or explicitly directs and accepts a scoped baseline correction; record the latter as an operator override without a redundant approval prompt. When a later baseline supersedes the prior one, re-invoke the QA and development-plan owners automatically and mark affected production Feature Units `execution_invalidated` in the manifest/runtime projection. This skill does not own production implementation agents; the DAS Forge Phase 3 runner dispatches them only after the regenerated plan validates. An implementation agent cannot create an override or make its own drift authoritative.
 
 ## Manifest Contract
 
@@ -140,6 +141,13 @@ Store at least:
   },
   "prototype_candidates": [],
   "approved_baseline_id": "string|null",
+  "active_baseline": {
+    "baseline_id": "string|null",
+    "visual_target_hash": "string|null",
+    "prototype_tree_hash": "string|null",
+    "operator_overrides": [],
+    "supersedes": "string|null"
+  },
   "affected_feature_units": [],
   "pause_reason": "string|null",
   "last_resume_event": "object|null",

@@ -64,7 +64,7 @@ Adapt the strongest UX Coach mechanics into a single SDD artifact:
 - Treat the brief as two spines inside one file: `Design Spine` and `Experience Spine`.
 - The Design Spine is the visual contract: brand/style, colors, typography, spacing, radius, elevation, component appearance, visual do/don't rules.
 - The Experience Spine is the behavior contract: form factor, IA implications, voice/tone rules, component behavior, state patterns, interaction primitives, accessibility, key flows.
-- Before design approval, the Design Spine and Experience Spine guide candidate generation. After the engineer approves the complete integrated prototype, the `Approved Visual Baseline` section in this file is the single canonical baseline manifest and becomes the concrete source of truth for visual composition, interaction detail, and frontend presentation. Do not create a second competing baseline receipt elsewhere. The spines remain authoritative for reusable system rules, unshown states, responsive behavior, and accessibility, and must be reconciled with the approved baseline. PRD and journey artifacts remain authoritative for product scope and behavior. Unapproved explorations never override either source.
+- Before design approval, the Design Spine and Experience Spine guide candidate generation. After the engineer approves the complete integrated prototype, the `Approved Visual Baseline` section in this file is the single canonical baseline manifest, the concrete source of truth for visual composition, interaction detail, and frontend presentation, and the visual Definition of Done for every user-visible frontend unit. Do not create a second competing baseline receipt elsewhere. The spines remain authoritative for reusable system rules, unshown states, responsive behavior, and accessibility, and must be reconciled with the approved baseline. PRD and journey artifacts remain authoritative for product scope and behavior. Unapproved explorations and implementation preference never override either source.
 - Keep a `Decision Log` for selected directions, rejected directions, scope cuts, tool choices, and user overrides.
 - Run a concern scan: accessibility, platform conventions, brand voice, regulated language, motion, internationalization, dark mode, offline behavior, content density, input modalities, notifications, AI control and reversibility.
 - Surface UI system inheritance. If shadcn, MUI, Tailwind, native UIKit, Compose, or an internal design system exists, extend or reference it instead of inventing a parallel system.
@@ -76,7 +76,8 @@ Use the strongest production UX/UI mechanics:
 - Match experience type: SaaS/operational tool, checkout, AI product, course/content, dashboard, landing/sales, mobile app, internal tool, or regulated workflow.
 - Preserve existing design systems unless the user explicitly wants a redesign.
 - Define complete states: default, hover, focus, active, disabled, loading, empty, error, success, long-content, offline, and permission-denied when relevant.
-- Meet WCAG 2.2 AA by default: contrast, visible focus, keyboard access, semantic structure, labels, errors, target sizes, and reduced-motion support.
+- Meet WCAG 2.2 AA by default: contrast, visible focus, keyboard access, semantic structure, labels, errors, and target sizes.
+- Preserve source-approved motion and make required state or information understandable without relying on animation alone. Do not invent a reduced-motion variant or automatically remove, replace, or simplify approved motion unless an explicit product source requires it.
 - When project principles or user policy define font constraints, verify font licensing and provenance before selection. If provenance cannot be confidently verified, prefer system stacks or verified independent foundries.
 - Plan responsive behavior at 390, 430, 768, 1280, and 1440px unless sources specify different target devices.
 - Avoid one-note palettes, decorative blobs, meaningless gradients, hidden scrollbars, card-in-card layouts, and visual trend choices that weaken usability.
@@ -108,7 +109,7 @@ If audience, product category, platform priorities, existing-system inheritance,
 10. Define responsive, accessibility, state, and interaction expectations.
 11. Add handoff prompts or guidance for Figma, v0, Stitch, or Codex only when useful and only from captured content.
 12. Run the Validation Pass defined below before creating or updating the artifact.
-13. When an integrated prototype has been approved, update the canonical `Approved Visual Baseline` section with its stable Baseline ID, selected candidate/version, artifact references, coverage, approval receipt, and permitted variance. Do not create another design approval. When a later approved whole supersedes the baseline, record the prior ID and receipt in the Decision Log and record downstream invalidation intent in this artifact. Only the orchestrator changes manifest/runtime status, re-invokes QA and development-plan owners, and marks affected production units invalidated.
+13. When an integrated prototype has been approved, atomically update the canonical `Approved Visual Baseline` section with its stable Baseline ID, selected candidate/version, immutable visual target/hash, frozen prototype source root/tree hash, artifact references, visual-DoD scope, coverage, approval receipt, and permitted variance. Keep the prior approved baseline active while a revision is only proposed. An explicit scoped operator correction becomes a recorded baseline override for that scope; a newly approved integrated whole creates a new active Baseline ID and marks the old immutable baseline superseded. Record the prior ID and receipt in the Decision Log and downstream invalidation intent in this artifact. Do not create another design approval merely to acknowledge an operator-authored correction. Only the orchestrator changes manifest/runtime status, re-invokes QA and development-plan owners, and marks affected production units invalidated.
 14. Avoid changing scope, adding screens, or rewriting wireframes.
 15. Before writing the artifact, verify the planned content:
    - Every load-bearing claim traces to a named source file or an explicit user answer, or it is moved to `Open Questions`.
@@ -201,12 +202,16 @@ Token values live only in `### Design Tokens`; other spine sections reference to
 - Baseline ID:
 - Selected Candidate And Version:
 - Immutable Visual Target Reference And Hash:
+- Frozen Prototype Source Root And Tree Hash:
 - Prototype Artifact References:
+- Visual Definition Of Done Scope:
 - Covered Screens States And Viewports:
 - Approval Receipt:
 - Approved At:
 - Permitted Variance:
+- Operator Overrides:
 - Supersedes:
+- Superseded By:
 - Downstream Invalidation:
 
 ## Validation Report

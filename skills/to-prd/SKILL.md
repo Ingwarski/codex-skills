@@ -65,6 +65,9 @@ Reference downstream owners instead of prematurely writing their artifacts insid
 - Prefer externally observable test seams and the highest practical seam. Tests verify the agreed product; they do not become the source of product truth.
 - Preserve the product's autonomy model. Do not add approval gates unless the source requires them or the action crosses a high-risk authorization boundary.
 - For a design-first product, distinguish the pre-design SDD baseline, prototype comparison, whole-design approval, and post-approval production implementation.
+- When the source uses P0-P3 findings, carry one formal severity glossary into the PRD and keep severity separate from blocking/advisory release effect.
+- When the source makes an approved prototype authoritative, state explicitly whether it is the visual Definition of Done for user-visible frontend work and preserve any source-backed prototype-to-production trace contract.
+- Do not import a generic reduced-motion mode, animation cap, or automatic motion removal/simplification when the product idea instead makes approved motion part of its visual baseline.
 - Do not include brittle file paths or code snippets unless a small source-backed state machine, schema, or type shape expresses a decision more precisely than prose.
 - Do not claim that static documentation, a screenshot, or a prototype proves runtime functionality.
 

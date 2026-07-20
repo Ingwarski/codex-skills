@@ -64,7 +64,8 @@ Adapt the useful parts of proven DoD, quality-gate, planning, and eval reference
 - From `breakdown-plan`: define DoD at useful levels such as product, feature/unit, story/task, enabler, and test where sources support those levels.
 - From eval/lane-gate patterns: attach eval definitions to workflow state transitions; a lane promotion is blocked until required evals pass; evals have standard result shape and persistable evidence.
 - From SDD guardrails: source docs and confirmed code win over agent self-assessment.
-- Split intended truth by concern: current validated SDD owns product scope and behavior; the engineer-approved integrated prototype owns visual composition, interaction detail, and frontend presentation; architecture and guardrails own technical and risk boundaries. Treat even the Approved Visual Baseline as design/visual evidence, not proof of completed functionality, until implementation is connected to real state/data/actions, runner evidence, and required DoD gates.
+- Split intended truth by concern: current validated SDD owns product scope and behavior; the engineer-approved integrated prototype owns visual composition, interaction detail, and frontend presentation and is the visual Definition of Done for every user-visible frontend unit; architecture and guardrails own technical and risk boundaries. Treat even the Approved Visual Baseline as design/visual evidence, not proof of completed functionality, until implementation is connected to real state/data/actions, runner evidence, and required DoD gates.
+- Define one reusable parameterized gate named `approved_visual_baseline_fidelity` for frontend, full-stack, and integration units with user-visible output. Parameterize it with the active Baseline ID, immutable target hash, affected routes/states/viewports, permitted variance, concrete QA check IDs, `VisualQAEvidence`, and the `PrototypePromotionReceipt` when prototype code was reused. Pass only when the baseline is current, required coverage exists, every deviation is permitted or source-backed, and no blocking fidelity finding remains. A stale or superseded baseline, missing target/coverage, unexplained material drift, P0, P1, or blocking P2 blocks the gate; advisory P2/P3 remains follow-up.
 
 Do not copy these source skills wholesale:
 - Do not turn this into a command runner. This skill writes the DoD/evals source-of-truth document; it does not execute gates.
@@ -116,6 +117,7 @@ Ask DoD/eval questions with recommended answers based on sources. Prefer:
 - `passed` only when required gates pass with fresh evidence
 - `blocked` when an applicable required gate, P0, P1, or a P2 explicitly classified as blocking remains open
 - non-blocking P2 and P3 findings remain visible as follow-up work and do not require operator approval or prevent completion
+- the canonical product severity meanings: P0 catastrophic severe harm or system-wide unusability; P1 a broken primary journey, core capability, release invariant, or high-impact requirement with no acceptable workaround for a material supported scope; P2 a localized but meaningful defect, regression, requirement gap, or visual/interaction drift while the product remains broadly usable or a reasonable workaround exists; P3 low-impact polish or cosmetic inconsistency without material impact
 - every finding records severity, release effect, applicability, source, evidence, and rationale; do not infer release effect from severity alone
 - static docs can define intended checks but cannot prove runtime behavior
 - manual approval is not a default gate for user-facing transitions; require the single whole-design-baseline approval and only the risk-specific authorizations defined by guardrails for irreversible, destructive, financial, legal, public, privileged, security-sensitive, privacy-sensitive, or external effects
@@ -127,7 +129,7 @@ Ask DoD/eval questions with recommended answers based on sources. Prefer:
 4. Extract architecture-driven verification needs from `docs/architecture.md`.
 5. Separate acceptance criteria, DoD, QA checklist items, and implementation tasks.
 6. Define the standing DoD model.
-7. Define verification profile tiers: hard gates, unit checks, system checks, UX/UI checks, evidence, static-surface limits, and release/merge checks.
+7. Define verification profile tiers: hard gates, unit checks, system checks, UX/UI checks, evidence, static-surface limits, and release/merge checks. For any user-visible frontend scope, include the parameterized `approved_visual_baseline_fidelity` gate and bind it to the current baseline plus concrete QA checks rather than restating the design.
 8. Define lane/state promotion gates only when sources define engineering delivery lanes, execution states, or completion transitions. Ordinary product UI states do not create engineering gates.
 9. Define eval result format with pass/fail/blocked status, evidence, owner, timestamp/source, and rerun rule.
 10. Define failure and blocker classification without duplicating `docs/qa-checklist.md`.
@@ -199,6 +201,15 @@ For every gate or eval include:
 - `Fail Or Block Condition`
 - `Rerun Rule`
 - `Automation Status`: `automated`, `manual`, `not available yet`, or `open question`
+
+For `approved_visual_baseline_fidelity` additionally include:
+- `Baseline ID`
+- `Immutable Target Hash`
+- `Affected Routes States And Viewports`
+- `Permitted Variance And Operator Overrides`
+- `QA Check IDs`
+- `VisualQAEvidence References`
+- `PrototypePromotionReceipt`, when prototype code was reused
 
 For every finding classification include:
 - `Severity: P0 | P1 | P2 | P3`

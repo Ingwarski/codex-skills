@@ -43,8 +43,8 @@ Do not modify unrelated files.
 - verification steps
 - risk sequencing
 - handoff notes for implementation
-- approved-baseline mapping and permitted visual variance per user-visible unit
-- prototype-to-production promotion boundaries when prototype code exists
+- approved-baseline visual-DoD mapping and permitted visual variance per user-visible unit
+- planned prototype-to-production source/destination mapping and promotion boundaries when prototype code exists
 - frontend/backend interface contracts and integration seams for cross-layer units
 
 It must not define:
@@ -67,8 +67,10 @@ This is an SDD development plan. It may include tests and verification, but it m
 - Every unit needs source references, work items, acceptance checks, and verification.
 - Evidence before completion: the plan must say what proves each unit is done.
 - SDD-first: tests and verification support the agreed spec; they do not become the source of product truth.
-- Use the PRD and journey artifacts for behavior and scope, and the Approved Visual Baseline for visual composition, interaction detail, and frontend presentation. Architecture, guardrails, and applicable standards remain hard technical and risk boundaries. Do not reinterpret or re-approve the design inside the development plan.
-- Treat image-to-code or equivalent prototype output as design evidence and an optional frontend seed, not as proof of production auth, persistence, backend/API, integrations, security boundaries, or exhaustive edge-case behavior. When prototype code will be reused, define a traced promote/diff step and keep Phase 3 frontend, backend, and integration responsibilities explicit.
+- Use the PRD and journey artifacts for behavior and scope, and treat the Approved Visual Baseline as the visual Definition of Done for visual composition, interaction detail, and frontend presentation in every user-visible frontend unit. Architecture, guardrails, and applicable standards remain hard technical and risk boundaries. Do not reinterpret or re-approve the design inside the development plan. An explicit recorded operator correction overrides the prior visual expectation only for its named scope.
+- Treat image-to-code or equivalent prototype output as design evidence and an optional frontend seed, not as proof of production auth, persistence, backend/API, integrations, security boundaries, or exhaustive edge-case behavior. When prototype code will be reused, define a traced promote/diff contract and keep Phase 3 frontend, backend, and integration responsibilities explicit.
+- A traced promote/diff contract freezes the approved candidate source root/tree hash, names only the prototype source paths to reuse, maps each to an explicit production destination with `copy | adapt | reimplement`, records the production base commit and allowed adaptations, and lists every production capability missing from the prototype. The Phase 3 runner applies that bounded map, derives the actual Git diff, and writes `forge/runs/{unit_id}/{run_id}/prototype-promotion.json`; the planning skill never writes that receipt and the implementation agent's free-form report cannot substitute for it.
+- The `PrototypePromotionReceipt` must include schema version, promotion/unit/run IDs, development-plan reference/hash, Baseline ID and target hash, candidate/version, prototype source root/tree hash, path mappings and source/destination hashes, base/head commits, changed paths and patch hash, declared adaptations/variances, QA check IDs, visual evidence, verification status, and timestamp. It is machine evidence, not another human gate.
 - Do not turn the plan into tiny commit choreography unless the user asks.
 
 ## Gap-Check
@@ -85,6 +87,7 @@ Before writing, verify that sources identify:
 - existing architecture, file structure, or component system when a codebase exists
 - deployment or runtime constraints that affect build order
 - prototype-code reuse policy and missing production capabilities, when runnable prototype code exists
+- frozen prototype source root/tree hash, planned source-to-destination mapping, production base reference, allowed adaptation strategy, and required promotion-receipt path for every traced reuse
 
 If stack, constraints, dependencies, or verification expectations are missing, first re-invoke the owning upstream artifact skill. Ask only when the unresolved answer materially changes product scope or a high-risk boundary. Otherwise use the smallest reversible source-compatible plan seam, record the dependency, and continue.
 
@@ -98,7 +101,7 @@ If stack, constraints, dependencies, or verification expectations are missing, f
 7. Map likely files, modules, routes, components, services, and tests before defining tasks.
 8. Break work into implementation units that can be built and verified.
 9. Order units by dependency and user-value sequence.
-10. Attach behavioral SDD references and, for every user-visible unit, Approved Baseline ID, covered screens/states, design contract, permitted variance, and visual-fidelity verification. For backend-only units, state whether the unit enables user-visible states, data, or actions. When prototype code exists, identify whether the unit reuses none of it or promotes a traced diff, and name every production capability still implemented outside the prototype. For every cross-layer or independently parallelizable frontend/backend unit, name interfaces produced and consumed, API/data-contract references, ownership, compatibility expectations, and integration verification.
+10. Attach behavioral SDD references and, for every user-visible unit, Approved Baseline ID, target hash, covered screens/states/viewports, design contract, permitted variance/operator override, and the `approved_visual_baseline_fidelity` verification reference. For backend-only units, state whether the unit enables user-visible states, data, or actions. When prototype code exists, identify whether the unit reuses none of it or uses traced promote/diff; for traced reuse record the frozen source root/tree hash, source-to-destination path map, `copy | adapt | reimplement` strategy, production base commit, allowed adaptations, receipt path, and every production capability still implemented outside the prototype. For every cross-layer or independently parallelizable frontend/backend unit, name interfaces produced and consumed, API/data-contract references, ownership, compatibility expectations, and integration verification.
 11. Include verification steps derived from `docs/qa-checklist.md` and `docs/dod-evals.md`.
 12. Self-review coverage: every PRD requirement and every screen and state in `docs/screen-map.md` maps to an implementation unit or to Out Of Scope / Open Questions with a reason; the Approved Visual Baseline maps to every user-visible unit; architecture constraints from `docs/architecture.md` and DoD/eval gates from `docs/dod-evals.md` map to verification or sequencing notes; cross-layer interfaces have both a producer and consumer; unit names and references are consistent across the plan; no placeholders remain.
 13. Avoid tiny commit choreography as the main teaching frame.
@@ -112,7 +115,7 @@ If stack, constraints, dependencies, or verification expectations are missing, f
 ## Required Output Structure
 Use this structure:
 
-Required contract sections are `Source References`, `Implementation Strategy`, `Implementation Units`, `Dependency Order`, `Verification Plan`, `Out Of Scope`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
+Required contract sections are `Source References`, `Implementation Strategy`, `Implementation Units`, `Dependency Order`, `Verification Plan`, `Out Of Scope`, and `Open Questions`. `Prototype Promotion Plan` is required when any unit uses traced promote/diff and omitted otherwise. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
 
 ```markdown
 # Development Plan
@@ -131,6 +134,8 @@ Required contract sections are `Source References`, `Implementation Strategy`, `
 
 ## Visual And UX Verification
 
+## Prototype Promotion Plan
+
 ## Risks And Sequencing Notes
 
 ## Out Of Scope
@@ -148,11 +153,18 @@ For each implementation unit include:
 - `Verification`
 - `Delivery Layer: frontend | backend | full-stack | integration | infrastructure`
 - `Approved Baseline ID`, for user-visible units
-- `Baseline Screens And States`, for user-visible units
+- `Immutable Visual Target Hash`, for user-visible units
+- `Baseline Screens States And Viewports`, for user-visible units
 - `Design Contract And Permitted Variance`, for user-visible units
-- `Visual Fidelity Verification`, for user-visible units
+- `Operator Visual Overrides`, when present for the unit scope
+- `Visual Fidelity Verification: approved_visual_baseline_fidelity`, for user-visible units
 - `Baseline Impact: none | user-visible states/data/actions enabled`, for backend-only units
 - `Prototype Reuse: none | traced promote/diff`, when prototype code exists
+- `Prototype Source Root And Tree Hash`, for traced promote/diff
+- `Prototype To Production Path Map`, for traced promote/diff, with `source`, `destination`, and `strategy: copy | adapt | reimplement`
+- `Production Base Commit`, for traced promote/diff
+- `Allowed Prototype Adaptations`, for traced promote/diff
+- `Required PrototypePromotionReceipt: forge/runs/{unit_id}/{run_id}/prototype-promotion.json`, for traced promote/diff
 - `Production Capabilities Added Beyond Prototype`, when prototype code exists
 - `Interfaces Produced`, for cross-layer or independently parallelized units
 - `Interfaces Consumed`, for cross-layer or independently parallelized units
