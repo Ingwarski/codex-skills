@@ -17,12 +17,16 @@ If a gap-check ran, or if the skill synthesized architecture decisions not fully
 Read:
 - `README.md`, if present
 - `docs/prd.md`
+- `docs/project-context.md`, when present or supplied by `to-sdd-pipeline`
+- `docs/canonical-terms.md`, when present or supplied by `to-sdd-pipeline`
 - `docs/guardrails.md`
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
 - `docs/design-brief.md`
 - `docs/product-idea.md`, only if `docs/prd.md` explicitly names it as an authoritative source or the user asks to use it
+
+Use confirmed relevant platform/runtime/deployment constraints, roles, external dependencies, operational risks, and canonical vocabulary from the context bundle. Do not copy descriptive context, promote assumptions to architecture facts, add product scope, or let either file override PRD behavior. Record only the exact sections or terms consumed when pipeline provenance is requested.
 
 Inspect the codebase structure when implementation will happen in an existing project. Existing code, package manifests, routes, schemas, environment files, and config files can confirm architecture facts; they do not authorize new product scope.
 

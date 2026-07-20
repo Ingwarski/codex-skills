@@ -17,9 +17,11 @@ If a gap-check ran, or if the skill synthesized decisions not fully determined b
 Read:
 - `README.md`, if present
 - `docs/prd.md`
+- `docs/project-context.md`, when present or supplied by `to-sdd-pipeline`
+- `docs/canonical-terms.md`, when present or supplied by `to-sdd-pipeline`
 - `docs/product-idea.md`, only when `docs/prd.md` names it as authoritative or the user asks to use it
 
-This skill runs after `docs/prd.md` and before downstream UX, architecture, DoD/eval, and QA artifacts. Re-run it only when the PRD, an explicitly authoritative product-idea source, or a user decision invalidates a named rule or introduces a new authority/risk boundary. Never read downstream artifacts back into guardrails; this keeps the dependency graph acyclic.
+This skill runs after `docs/prd.md` and the validated context bundle in pipeline mode, and before downstream UX, architecture, DoD/eval, and QA artifacts. Use only confirmed relevant context constraints and canonical vocabulary; do not turn assumptions into guardrails or let either context file override PRD behavior. Record exact consumed sections or terms when the orchestrator requests provenance. Re-run only when the PRD, an explicitly authoritative product-idea source, a consumed context/term fragment, or a user decision invalidates a named rule or introduces a new authority/risk boundary. Never read downstream artifacts back into guardrails; this keeps the dependency graph acyclic.
 
 ## Output
 Create or update exactly one artifact:

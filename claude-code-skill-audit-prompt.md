@@ -9,10 +9,13 @@ Workspace:
 
 Read these files completely:
 
+- `skills/to-sdd-pipeline/SKILL.md`
+- `skills/to-prd/SKILL.md`
+- `skills/to-project-context/SKILL.md`
 - `skills/to-user-journey/SKILL.md`
 - `skills/to-screen-map/SKILL.md`
 - `skills/to-wireframes/SKILL.md`
-- `skills/to-ux-ui-brief/SKILL.md`
+- `skills/to-design-brief/SKILL.md`
 - `skills/to-architecture/SKILL.md`
 - `skills/to-dod-evals/SKILL.md`
 - `skills/to-guardrails/SKILL.md`
@@ -23,23 +26,26 @@ Read these files completely:
 
 1. This is an SDD pipeline, not TDD.
 2. The intended chain is:
-   `to-prd -> to-user-journey -> to-screen-map -> to-wireframes -> to-ux-ui-brief -> to-architecture -> to-dod-evals -> to-guardrails -> to-qa-checklist -> to-development-plan`
-3. Each skill must create or update exactly one output artifact.
+   `to-prd -> to-project-context (project-context.md + canonical-terms.md) -> to-guardrails -> to-user-journey -> to-screen-map -> to-wireframes -> to-design-brief -> to-architecture -> to-dod-evals -> to-qa-checklist -> three prototypes -> one design approval -> to-development-plan`
+3. Every artifact must have exactly one owner, and each owner invocation must stay inside its declared output boundary. `to-project-context` is the explicit cohesive two-file output bundle; its two members must be validated and hashed separately under one invocation.
 4. Output files must be strictly separated by responsibility and must not duplicate or contradict one another.
 5. AI is not the source of truth. Source files and explicit user answers are the source of truth.
 6. If required information is missing from source files, the skill must use a grill-me style gap-check before producing the output file.
 7. No draft output files. The skill should either create the final artifact or ask questions first.
-8. No hidden assumptions. Anything not source-backed or user-confirmed goes to `Open Questions`.
+8. No hidden assumptions. `project-context.md` may retain clearly labeled contextual assumptions in its dedicated `Assumptions` section; unresolved decisions go to `Open Questions`, and no assumption may become silent product truth.
 9. The goal is not document proliferation. The goal is to reliably move from PRD to high-quality UX/UI design and then implementation planning.
 10. If proven mechanisms already exist in other skills, use them. Do not reward shallow original templates.
 11. The final audit must be direct, evidence-based, and specific. Do not give vague praise.
 
 ## Expected Output Artifacts In The Pipeline
 
+- `docs/prd.md`
+- `docs/project-context.md`
+- `docs/canonical-terms.md`
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
-- `docs/ux-ui-brief.md`
+- `docs/design-brief.md`
 - `docs/architecture.md`
 - `docs/dod-evals.md`
 - `docs/guardrails.md`
@@ -49,6 +55,14 @@ Read these files completely:
 ## Artifact Responsibility Boundaries
 
 Use these boundaries as the user's intended contract.
+
+### `docs/project-context.md`
+
+Owns confirmed product context, users, platforms, boundaries, constraints, assumptions, risks, and open questions derived after PRD work. It must not redefine PRD behavior or downstream architecture/design/DoD decisions.
+
+### `docs/canonical-terms.md`
+
+Owns downstream product vocabulary, aliases, and terms to avoid. It must not redefine PRD behavior or silently rename established technical identifiers.
 
 ### `docs/user-journey.md`
 
@@ -127,7 +141,7 @@ Must not own:
 - design tokens
 - implementation tasks
 
-### `docs/ux-ui-brief.md`
+### `docs/design-brief.md`
 
 Owns:
 
@@ -439,7 +453,7 @@ If none of these candidate skills can be found as actual readable `SKILL.md` fil
    - why it matters;
    - which external skill or mechanism should influence the fix;
    - what exact change should be made.
-10. Pay special attention to `to-ux-ui-brief`: it must be strong enough to guide high-quality UX/UI design, not just produce a generic design brief.
+10. Pay special attention to `to-design-brief`: it must be strong enough to guide high-quality UX/UI design, not just produce a generic design brief.
 11. Pay special attention to `to-guardrails`: it must prevent AI from inventing scope, silently ignoring missing sources, or claiming completion without evidence.
 12. Pay special attention to duplicated ownership between artifacts.
 13. Pay special attention to whether the current skills say "source-backed" but still allow vague output.
@@ -514,7 +528,7 @@ Create a table:
 
 ## UX/UI Quality Risks
 
-Focus especially on whether `to-wireframes` and `to-ux-ui-brief` can actually lead to a high-quality product UI.
+Focus especially on whether `to-wireframes` and `to-design-brief` can actually lead to a high-quality product UI.
 
 ## Grill-Me And Source-Of-Truth Risks
 

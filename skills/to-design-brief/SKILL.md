@@ -19,10 +19,14 @@ If a gap-check ran, or if the skill synthesized decisions not fully determined b
 Read:
 - `README.md`, if present
 - `docs/prd.md`
+- `docs/project-context.md`, when present or supplied by `to-sdd-pipeline`
+- `docs/canonical-terms.md`, when present or supplied by `to-sdd-pipeline`
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
 - `docs/guardrails.md`
+
+Use confirmed relevant audience, platform, localization, brand/provenance, content, constraint, and vocabulary facts from the context bundle. Do not copy descriptive context, promote assumptions to facts, add product scope, or let either file override PRD/journey/screen/wireframe behavior. Record only the exact sections or terms consumed when pipeline provenance is requested.
 
 ## Output
 Create or update exactly one artifact:

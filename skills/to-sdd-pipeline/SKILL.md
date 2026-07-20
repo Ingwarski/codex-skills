@@ -1,6 +1,6 @@
 ---
 name: to-sdd-pipeline
-description: Orchestrate a design-first SDD pipeline from docs/product-idea.md through the coherent pre-design SDD baseline, exactly three runnable prototype candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
+description: Orchestrate a design-first SDD pipeline from docs/product-idea.md through PRD, the project-context/canonical-terms bundle, the coherent pre-design SDD baseline, exactly three runnable prototype candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
 ---
 # to-sdd-pipeline
 
@@ -27,6 +27,8 @@ It must never directly create or edit a domain artifact. Invoke or re-invoke the
 | Artifact | Owner |
 |---|---|
 | `docs/prd.md` | `to-prd` |
+| `docs/project-context.md` | `to-project-context` |
+| `docs/canonical-terms.md` | `to-project-context` |
 | `docs/guardrails.md` | `to-guardrails` |
 | `docs/user-journey.md` | `to-user-journey` |
 | `docs/screen-map.md` | `to-screen-map` |
@@ -37,7 +39,7 @@ It must never directly create or edit a domain artifact. Invoke or re-invoke the
 | `docs/qa-checklist.md` | `to-qa-checklist` |
 | `docs/development-plan.md` | `to-development-plan` |
 
-An owner skill may change only its declared artifact. The orchestrator validates owner output, records its hash and provenance, then dispatches every newly ready node without asking the user to continue.
+An owner invocation may change only its declared artifact path or declared cohesive output set. `to-project-context` is one coupled two-output owner invocation: both files are required, validated and hashed separately, and recorded with the same owner-invocation ID. A missing, stale, or invalid member makes `project-context-bundle` incomplete and re-invokes that owner for the whole bundle. Every artifact still has exactly one owner. The orchestrator validates owner output, records its hash and provenance, then dispatches every newly ready node without asking the user to continue.
 
 The prototype producer is a runtime adapter, not an SDD artifact owner. During Phase 2 it may write candidate-specific code/assets only under `forge/design/candidates/{candidate_id}/{version}/`, optional shared preview infrastructure only under the versioned `forge/design/candidate-sets/{candidate_set_id}/{set_version}/shared/` workspace, and normalized evidence under `forge/design/evidence/`. Shared runtime reuse resolves to that candidate-set version and cannot hide mutable source elsewhere. It must not write production application source directories, domain SDD artifacts, or the orchestration manifest. Every write records adapter, candidate/version or candidate-set version, target hash, and changed paths. Phase 3 implementation agents own production-code writes under the bounds of the approved development plan.
 
@@ -48,6 +50,9 @@ Use this acyclic graph:
 ```text
 product-idea
 -> prd
+-> project-context-bundle
+   |- project-context
+   `- canonical-terms
 -> guardrails
 -> user-journey
 -> screen-map
@@ -64,9 +69,26 @@ product-idea
 -> development-plan
 ```
 
-`docs/guardrails.md` depends only on the PRD and explicitly authoritative upstream intent; it never reads downstream artifacts back into itself. `docs/wireframes.md` never depends on `docs/design-brief.md`. `docs/development-plan.md` never belongs to the pre-design baseline because it requires the Approved Visual Baseline.
+In pipeline mode, `to-project-context` reads only the product idea, PRD, explicit user decisions, README/CODEX, and independent project evidence; it never reads downstream SDD artifacts back into the context bundle. `docs/guardrails.md` depends only on the PRD, the validated context bundle, and explicitly authoritative upstream intent; it never reads downstream artifacts back into itself. `docs/wireframes.md` never depends on `docs/design-brief.md`. `docs/development-plan.md` never belongs to the pre-design baseline because it requires the Approved Visual Baseline.
 
 Run independent ready nodes in parallel when their owner skills and workspace safety allow it. Serialize nodes that share a source file being updated.
+
+## Project Context Bundle Contract
+
+Immediately after `docs/prd.md` validates, invoke `to-project-context` once to produce:
+
+- `docs/project-context.md`
+- `docs/canonical-terms.md`
+
+Both outputs must validate from the same current PRD/product-intent source set and owner-invocation ID before `guardrails` or any later node becomes ready. Their assumptions and non-blocking open questions remain visible but do not create approval gates.
+
+Pass both validated files to every downstream artifact owner as candidate upstream sources. Owners must use only relevant confirmed context and exact canonical vocabulary:
+
+- `project-context.md` may supply users, platforms, localization, boundaries, constraints, dependencies, operational risks, and other confirmed context, but cannot add or override product behavior, architecture, guardrails, design, DoD, or QA truth;
+- `canonical-terms.md` governs downstream naming and aliases only; it cannot redefine PRD behavior or silently rename established technical identifiers;
+- assumptions remain assumptions, and descriptive or irrelevant content must not be copied merely to prove the files were read.
+
+For each downstream artifact, record only the exact context sections or canonical-term entries it consumed in that artifact's manifest provenance. Hash those consumed fragments independently so an unrelated prose edit does not invalidate the whole pipeline. A change to a consumed context fact or term invalidates only its transitive dependents. A PRD or authoritative product-intent change invalidates both bundle members together. If the bundle exposes an upstream contradiction, re-invoke the upstream owner first and then regenerate the bundle; never patch the PRD from `to-project-context` or create a dependency cycle.
 
 ## Autonomy And Stop Rules
 
@@ -123,6 +145,8 @@ If a source hash changes, invalidate only transitive dependents. Keep the curren
 
 Store at least:
 
+Store `project-context` and `canonical-terms` as two separate entries in `artifacts`. Both entries use `owner_skill: to-project-context`, the same non-null `owner_invocation_id`, and the same two-member `declared_output_set`; their content hashes and validation results remain independent.
+
 ```json
 {
   "pipeline_version": "string",
@@ -131,8 +155,15 @@ Store at least:
     "artifact_id": {
       "path": "string",
       "owner_skill": "string",
+      "owner_invocation_id": "string|null",
+      "declared_output_set": [],
       "status": "missing|ready|running|validated|invalidated|blocked",
+      "mission_control_status": "Pending|Running|Ready|Needs attention|Approved design|Blocked|Done",
+      "source_version": "string|null",
       "source_hashes": {},
+      "consumed_source_fragments": {},
+      "dependencies": [],
+      "dependency_status": {},
       "content_hash": "string|null",
       "validation": {},
       "open_questions": [],
@@ -155,16 +186,18 @@ Store at least:
 }
 ```
 
+Artifact `status` is orchestration state, while `mission_control_status` is its operator-facing projection. Map `validated` to `Done`, `invalidated` to `Needs attention` until it becomes ready again, and `blocked` to `Blocked`; `ready` means machine-ready for dispatch and is never an approval. `Approved design` is reserved for the active whole-design baseline state, not ordinary artifact completion. Keep `source_version`, `source_hashes`, `dependencies`, and `dependency_status` explicit for every artifact so readiness and invalidation do not have to be inferred from prose or filesystem order.
+
 Do not store secrets. Use stable IDs and content hashes so resume and invalidation are deterministic.
 
 ## Workflow
 
 1. Load or initialize the manifest from actual files; never trust stale manifest state over filesystem evidence.
 2. When resuming from a product-scope answer, design-approval receipt, or risk-authorization receipt, validate and persist the response, clear `pause_reason`, recompute hashes and ready nodes, and continue automatically in the same pipeline run. Do not require a separate resume confirmation.
-3. Validate `docs/product-idea.md`, then dispatch `to-prd` if required.
-4. Compute ready nodes from the dependency graph and dispatch their owner skills.
+3. Validate `docs/product-idea.md`, dispatch `to-prd` if required, then invoke `to-project-context` once for the two-file bundle. Validate both members separately, verify their shared owner-invocation ID and current source hashes, and do not make `guardrails` ready until both pass.
+4. Compute ready nodes from the dependency graph and dispatch their owner skills with the validated context bundle available as relevance-scoped upstream sources.
 5. After each result, validate the owner boundary, source traceability, required structure, open questions, and content hash.
-6. Reconcile terminology and cross-artifact conflicts by re-invoking owners; never patch their artifacts directly.
+6. Reconcile terminology against `docs/canonical-terms.md` and cross-artifact conflicts by re-invoking owners; never patch their artifacts directly. Record only consumed context/term fragments so unrelated bundle edits do not trigger broad invalidation.
 7. Continue until the coherent pre-design SDD baseline validates.
 8. Produce and verify the three prototype candidates, open their three external-browser pages, then pause once for whole-design selection and approval.
 9. Persist the Approved Visual Baseline through its owner, update QA through its owner, and create the development plan through its owner.

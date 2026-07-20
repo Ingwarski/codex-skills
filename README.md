@@ -2,7 +2,7 @@
 
 This repository contains a design-first Codex SDD pipeline for moving from a basic product idea through a coherent pre-design specification, exactly three runnable prototype candidates, one whole-design approval, and implementation planning for a production frontend and backend.
 
-The skills are designed for **SDD - Specification Driven Development**. They are not a TDD workflow and they are not generic prompt templates. Each artifact-owner skill creates exactly one domain artifact. `to-sdd-pipeline` owns only the machine-readable orchestration manifest and invokes or re-invokes artifact owners autonomously.
+The skills are designed for **SDD - Specification Driven Development**. They are not a TDD workflow and they are not generic prompt templates. Every domain artifact has exactly one owner, and every owner invocation is confined to its declared output boundary. Most owners create one artifact; `to-project-context` is the explicit cohesive two-file bundle owner. `to-sdd-pipeline` owns only the machine-readable orchestration manifest and invokes or re-invokes artifact owners autonomously.
 
 ## Skill Chain
 
@@ -10,6 +10,7 @@ Use `to-sdd-pipeline` as the autonomous entrypoint. It dispatches this acyclic g
 
 ```text
 product-idea -> to-prd
+-> to-project-context (project-context.md + canonical-terms.md)
 -> to-guardrails
 -> to-user-journey
 -> to-screen-map
@@ -24,7 +25,7 @@ product-idea -> to-prd
 -> to-development-plan
 ```
 
-`to-prd` is the first domain-artifact owner dispatched by `to-sdd-pipeline` after `docs/product-idea.md` exists. `docs/wireframes.md` never depends on the later design brief, and the development plan is deliberately post-approval because it consumes the Approved Visual Baseline.
+`to-prd` is the first domain-artifact owner dispatched by `to-sdd-pipeline` after `docs/product-idea.md` exists. `to-project-context` runs immediately after the PRD and both bundle members must validate before later owners run. `docs/wireframes.md` never depends on the later design brief, and the development plan is deliberately post-approval because it consumes the Approved Visual Baseline.
 
 ## Included Skills
 
@@ -32,6 +33,7 @@ product-idea -> to-prd
 |---|---|---|
 | `to-sdd-pipeline` | `forge/sdd-manifest.json` | Dispatches artifact owners, tracks dependencies and hashes, runs prototype comparison, resumes after the one approval, and propagates invalidation without editing domain artifacts directly. |
 | `to-prd` | `docs/prd.md` | Converts the product idea and current project evidence into the first file-based domain artifact without issue-tracker side effects. |
+| `to-project-context` | `docs/project-context.md` and `docs/canonical-terms.md` | Creates the atomic context/vocabulary bundle after PRD validation; the two outputs are validated and hashed separately under one owner invocation. |
 | `to-user-journey` | `docs/user-journey.md` | Maps the real user, goal, context, journey stages, friction, decisions, failure path, and success state. |
 | `to-screen-map` | `docs/screen-map.md` | Defines screens, surfaces, routes, navigation, transitions, entry/exit points, and the canonical state list per screen. |
 | `to-wireframes` | `docs/wireframes.md` | Converts the screen map into low-fidelity screen structures, hierarchy, CTAs, forms, content zones, and state variants. |
@@ -49,10 +51,10 @@ All skills follow the same operating contract:
 - AI is not the source of truth. Source files and explicit user answers are.
 - Discoverable information must be read from sources or code instead of asked. A focused grill-me gap-check runs only for genuinely non-inferable information that materially changes product scope, the whole-design baseline, or a high-risk boundary.
 - Non-material gaps use the smallest reversible source-grounded default, are recorded, and do not become approval gates.
-- The skill creates only the final output file. No draft output files.
-- Unverified assumptions are not written into artifacts.
-- Anything not source-backed or user-confirmed goes to `Open Questions`.
-- Each skill creates or updates exactly one artifact.
+- An owner invocation creates only its declared final output path or cohesive output set. No draft output files.
+- Unverified assumptions are never written as facts. `project-context.md` may retain them only in its explicitly labeled `Assumptions` section; unresolved decisions belong in `Open Questions`.
+- Anything not source-backed or user-confirmed is either a clearly labeled contextual assumption or an `Open Question`, never silent product truth.
+- Every artifact has exactly one owner. `to-project-context` may update only its declared two-file bundle; all other current domain owners update one artifact.
 - The orchestrator never edits a domain artifact directly; it dispatches the owning skill and owns only `forge/sdd-manifest.json`.
 - Artifacts reference prior artifacts instead of duplicating them.
 - Artifact boundaries must be preserved.
@@ -62,6 +64,8 @@ All skills follow the same operating contract:
 
 The documents are intentionally separated:
 
+- `project-context.md` owns confirmed product context, users, platforms, boundaries, constraints, assumptions, risks, and open questions derived after PRD work.
+- `canonical-terms.md` owns normalized downstream vocabulary and aliases without redefining PRD behavior or established technical identifiers.
 - `user-journey.md` owns user behavior and journey logic.
 - `screen-map.md` owns which screens and states exist.
 - `wireframes.md` owns screen structure and state structure.
@@ -71,7 +75,7 @@ The documents are intentionally separated:
 - `guardrails.md` owns AI behavior, source-of-truth policy, and behavioral evidence policy.
 - `qa-checklist.md` owns concrete verification checks and per-check evidence artifacts.
 - `development-plan.md` owns implementation units and build order.
-- `forge/sdd-manifest.json` owns orchestration state, owner mapping, source/content hashes, dependency status, invalidation, and resume state; it does not own domain truth.
+- `forge/sdd-manifest.json` owns orchestration state, owner invocation/output-set mapping, source versions and hashes, consumed source fragments, explicit dependencies and dependency states, content hashes, validation, invalidation, and resume state; it does not own domain truth. Internal `validated` projects to Mission Control `Done`, while `ready` means machine-ready rather than approved.
 
 If one artifact needs information from another, it should cite or reference that artifact rather than restating it.
 
@@ -85,6 +89,7 @@ Recommended local install with symlinks:
 mkdir -p ~/.codex/skills
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-sdd-pipeline" ~/.codex/skills/to-sdd-pipeline
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-prd" ~/.codex/skills/to-prd
+ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-project-context" ~/.codex/skills/to-project-context
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-user-journey" ~/.codex/skills/to-user-journey
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-screen-map" ~/.codex/skills/to-screen-map
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-wireframes" ~/.codex/skills/to-wireframes
@@ -106,13 +111,13 @@ Start in a product project that has at least:
 docs/product-idea.md
 ```
 
-Useful optional project context:
+Useful optional initial repository evidence:
 
 ```text
 README.md
 ```
 
-Do not create extra context documents merely to satisfy ceremony. The orchestrator creates the smallest coherent set required by the product, while the complete DAS Forge path includes current product/UX, guardrail, architecture, DoD/eval, and QA sources before prototype approval and production planning.
+The full pipeline always creates the compact `docs/project-context.md` plus `docs/canonical-terms.md` bundle immediately after the PRD so later owners resolve context and vocabulary once. They consume only relevant confirmed sections or terms; descriptive or unrelated content is not copied merely to satisfy ceremony. Beyond this standard bundle, the orchestrator creates the smallest coherent set required by the product.
 
 Ask Codex to run the orchestration skill:
 
@@ -172,7 +177,7 @@ Severity and release effect are separate:
 - Other P2 and all P3 findings are advisory follow-up and do not create approvals.
 - Release readiness remains binary: `passed` when applicable gates and blocking findings are closed; otherwise `blocked`.
 
-`to-development-plan` is SDD-first. Tests and verification support the current validated spec, but they do not become the source of product truth. User-visible units map the Approved Baseline ID; cross-layer units name interfaces produced/consumed and integration evidence; prototype code is only an optional traced frontend seed, never proof of production backend, auth, persistence, or integrations.
+`to-development-plan` is SDD-first. Tests and verification support the current validated spec, but they do not become the source of product truth. It applies project context only where a confirmed fact changes implementation and uses canonical terms only where naming is relevant; it does not duplicate personas or context prose. User-visible units map the Approved Baseline ID; cross-layer units name interfaces produced/consumed and integration evidence; prototype code is only an optional traced frontend seed, never proof of production backend, auth, persistence, or integrations.
 
 `to-dod-evals` separates acceptance criteria from Definition of Done. Acceptance criteria confirm that a specific item was built correctly; DoD/eval gates define the standing completion bar and evidence required before anything can be called done. A mockup, screenshot, prototype, or visually convincing static surface is design/visual evidence only; it is not completed functionality unless connected to source-backed behavior, real state/data/actions, runner evidence, and required DoD gates.
 
@@ -204,6 +209,8 @@ skills/
   to-sdd-pipeline/
     SKILL.md
   to-prd/
+    SKILL.md
+  to-project-context/
     SKILL.md
   to-user-journey/
     SKILL.md

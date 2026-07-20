@@ -7,6 +7,8 @@ description: Use when the current validated product, UX, architecture, DoD/eval,
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
+When a current validated `docs/canonical-terms.md` exists, use it as vocabulary authority for unit names, roles, domain objects, states, actions, interfaces, API/data contracts, and user-facing labels. It cannot create requirements or silently rename established technical identifiers. Use confirmed facts from `docs/project-context.md` only when they materially affect implementation; its assumptions remain assumptions.
+
 If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/development-plan.md`, every implementation unit must be source-backed, user-confirmed, or left in `Open Questions`.
@@ -16,6 +18,8 @@ If a gap-check ran, or if the skill synthesized decisions not fully determined b
 ## Input
 Read:
 - `README.md`, if present
+- `docs/project-context.md`, when present; in a full pipeline run require its current validated manifest entry
+- `docs/canonical-terms.md`, when present; in a full pipeline run require its current validated manifest entry
 - `docs/prd.md`
 - `docs/user-journey.md`
 - `docs/screen-map.md`
@@ -46,6 +50,7 @@ Do not modify unrelated files.
 - approved-baseline visual-DoD mapping and permitted visual variance per user-visible unit
 - planned prototype-to-production source/destination mapping and promotion boundaries when prototype code exists
 - frontend/backend interface contracts and integration seams for cross-layer units
+- implementation consequences of relevant confirmed project context and canonical vocabulary, expressed through existing source references rather than duplicated context prose
 
 It must not define:
 - new product requirements
@@ -71,6 +76,10 @@ This is an SDD development plan. It may include tests and verification, but it m
 - Treat image-to-code or equivalent prototype output as design evidence and an optional frontend seed, not as proof of production auth, persistence, backend/API, integrations, security boundaries, or exhaustive edge-case behavior. When prototype code will be reused, define a traced promote/diff contract and keep Phase 3 frontend, backend, and integration responsibilities explicit.
 - A traced promote/diff contract freezes the approved candidate source root/tree hash, names only the prototype source paths to reuse, maps each to an explicit production destination with `copy | adapt | reimplement`, records the production base commit and allowed adaptations, and lists every production capability missing from the prototype. The Phase 3 runner applies that bounded map, derives the actual Git diff, and writes `forge/runs/{unit_id}/{run_id}/prototype-promotion.json`; the planning skill never writes that receipt and the implementation agent's free-form report cannot substitute for it.
 - The `PrototypePromotionReceipt` must include schema version, promotion/unit/run IDs, development-plan reference/hash, Baseline ID and target hash, candidate/version, prototype source root/tree hash, path mappings and source/destination hashes, base/head commits, changed paths and patch hash, declared adaptations/variances, QA check IDs, visual evidence, verification status, and timestamp. It is machine evidence, not another human gate.
+- Treat `docs/project-context.md` and `docs/canonical-terms.md` as contextual sources, not as owners of product requirements, architecture, design, guardrails, DoD, or QA rules. Apply them only when confirmed users/roles, platform/runtime/deployment targets, localization, privacy or operational constraints, external dependencies, risks, or canonical vocabulary materially affect an implementation unit, sequencing, interface, acceptance check, verification step, or handoff.
+- Do not reproduce personas, product summaries, pain points, glossaries, or descriptive context in the plan. Cite the exact relevant section or term in the existing `Source References` and write only its implementation consequence. Ignore stale, superseded, descriptive, unrelated, or unconsumed entries and never promote an assumption to a fact.
+- A missing context file does not block standalone planning when every implementation-relevant fact and term is already present in the required validated SDD. In a full pipeline run, use the validated bundle supplied by the orchestrator. If it conflicts materially with another owner artifact, return the conflict for upstream reconciliation rather than deciding it inside the plan.
+- When the orchestrator records fragment-level context provenance, regenerate only plan units that consume a changed context fact or canonical term. Unconsumed prose changes do not invalidate the plan.
 - Do not turn the plan into tiny commit choreography unless the user asks.
 
 ## Gap-Check
@@ -88,12 +97,13 @@ Before writing, verify that sources identify:
 - deployment or runtime constraints that affect build order
 - prototype-code reuse policy and missing production capabilities, when runnable prototype code exists
 - frozen prototype source root/tree hash, planned source-to-destination mapping, production base reference, allowed adaptation strategy, and required promotion-receipt path for every traced reuse
+- whether confirmed project-context facts or canonical terms materially affect implementation; absence of a relevant effect is valid and does not require filler
 
 If stack, constraints, dependencies, or verification expectations are missing, first re-invoke the owning upstream artifact skill. Ask only when the unresolved answer materially changes product scope or a high-risk boundary. Otherwise use the smallest reversible source-compatible plan seam, record the dependency, and continue.
 
 ## Workflow
 1. Inspect the input files.
-2. Extract implementation scope only from current validated SDD artifacts.
+2. Extract implementation scope only from current validated SDD artifacts. When the context bundle exists, classify its potentially relevant entries as `applied`, `reference-only`, `irrelevant`, or `conflict`; use canonical names consistently, cite only applied/reference-only fragments, and do not duplicate descriptive context.
 3. Resolve the canonical `Approved Visual Baseline` section in `docs/design-brief.md` and verify `Status: approved`, its stable Baseline ID, selected candidate/version, immutable visual-target reference/hash, approval receipt, and referenced prototype artifacts. For a UI product, stop before creating production units if this whole-baseline approval is absent; do not ask for any additional design approval. A changed or superseded Baseline ID invalidates affected plan units and requires the QA checklist plus those units to be regenerated before execution continues.
 4. Inspect the codebase structure if implementation will happen in an existing project.
 5. Use `docs/architecture.md` as the architecture source of truth; do not re-decide architecture inside the plan.
@@ -103,7 +113,7 @@ If stack, constraints, dependencies, or verification expectations are missing, f
 9. Order units by dependency and user-value sequence.
 10. Attach behavioral SDD references and, for every user-visible unit, Approved Baseline ID, target hash, covered screens/states/viewports, design contract, permitted variance/operator override, and the `approved_visual_baseline_fidelity` verification reference. For backend-only units, state whether the unit enables user-visible states, data, or actions. When prototype code exists, identify whether the unit reuses none of it or uses traced promote/diff; for traced reuse record the frozen source root/tree hash, source-to-destination path map, `copy | adapt | reimplement` strategy, production base commit, allowed adaptations, receipt path, and every production capability still implemented outside the prototype. For every cross-layer or independently parallelizable frontend/backend unit, name interfaces produced and consumed, API/data-contract references, ownership, compatibility expectations, and integration verification.
 11. Include verification steps derived from `docs/qa-checklist.md` and `docs/dod-evals.md`.
-12. Self-review coverage: every PRD requirement and every screen and state in `docs/screen-map.md` maps to an implementation unit or to Out Of Scope / Open Questions with a reason; the Approved Visual Baseline maps to every user-visible unit; architecture constraints from `docs/architecture.md` and DoD/eval gates from `docs/dod-evals.md` map to verification or sequencing notes; cross-layer interfaces have both a producer and consumer; unit names and references are consistent across the plan; no placeholders remain.
+12. Self-review coverage: every PRD requirement and every screen and state in `docs/screen-map.md` maps to an implementation unit or to Out Of Scope / Open Questions with a reason; the Approved Visual Baseline maps to every user-visible unit; architecture constraints from `docs/architecture.md` and DoD/eval gates from `docs/dod-evals.md` map to verification or sequencing notes; cross-layer interfaces have both a producer and consumer; unit names and references follow applicable canonical terms; every applied context fact has a concrete implementation consequence; assumptions were not promoted to facts; no context prose was duplicated; no placeholders remain.
 13. Avoid tiny commit choreography as the main teaching frame.
 14. Avoid adding product scope, architecture decisions, DoD rules, or design decisions.
 15. Before writing the artifact, verify the planned content:
@@ -172,6 +182,8 @@ For each implementation unit include:
 - `Interface Owner`, for cross-layer or independently parallelized units
 - `Compatibility Expectations`, for cross-layer or independently parallelized units
 - `Integration Verification`, for cross-layer or independently parallelized units
+
+Do not add a mandatory context field to every unit. Add an exact `docs/project-context.md` section or `docs/canonical-terms.md` term under the existing `Source References` only when that unit consumes it; otherwise omit it.
 
 ## Final Report
 Return:

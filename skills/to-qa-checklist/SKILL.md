@@ -17,6 +17,8 @@ If a gap-check ran, or if the skill synthesized decisions not fully determined b
 Read:
 - `README.md`, if present
 - `docs/prd.md`
+- `docs/project-context.md`, when present or supplied by `to-sdd-pipeline`
+- `docs/canonical-terms.md`, when present or supplied by `to-sdd-pipeline`
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
@@ -25,6 +27,8 @@ Read:
 - `docs/architecture.md`
 - `docs/dod-evals.md`
 - `docs/guardrails.md`
+
+Use confirmed relevant platforms, devices, locales, roles, operational constraints, risks, and canonical vocabulary from the context bundle only when they change an applicable check or fixture. Do not copy descriptive context, promote assumptions to checks, add product scope, or let either file override the owning SDD or Approved Visual Baseline. Record only the exact sections or terms consumed when pipeline provenance is requested.
 
 ## Output
 Create or update exactly one artifact:
