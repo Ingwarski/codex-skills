@@ -1,28 +1,28 @@
 ---
 name: to-dod-evals
-description: Use when approved SDD product and architecture artifacts exist and the user wants dod-evals.md, Definition of Done, eval gates, verification profile, quality gates, lane/state promotion gates, PR/merge rules, or evidence requirements before QA checklist or development planning.
+description: Use when the current validated product, guardrail, UX/design, and architecture SDD chain exists and the user wants dod-evals.md, Definition of Done, eval gates, verification profile, quality gates, engineering lane/state promotion gates, PR/merge rules, or evidence requirements before QA checklist or development planning. Artifact readiness is not a human approval.
 ---
 # to-dod-evals
 
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
-If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/dod-evals.md`, every DoD rule, gate, eval, and evidence requirement must be source-backed, user-confirmed, codebase-confirmed, or left in `Open Questions`.
 
-If a gap-check ran, or if the skill synthesized verification rules not fully determined by source files or existing code, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources and code already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
+If a gap-check ran, or if the skill synthesized verification rules not fully determined by source files or existing code, play back the resolved decisions in a pithy summary and continue with the smallest reversible, source-grounded rule unless the missing answer materially changes product scope or a high-risk boundary. Playback is not an approval gate. If a proposed rule would change an already Approved Visual Baseline, record `baseline_change_required` for the orchestrator instead of asking or approving inside this skill.
 
 ## Input
 Read:
 - `README.md`, if present
 - `docs/prd.md`
-- `docs/user-journey.md`, if present
-- `docs/screen-map.md`, if present
-- `docs/wireframes.md`, if present
-- `docs/design-brief.md`, if present
+- `docs/user-journey.md`
+- `docs/screen-map.md`
+- `docs/wireframes.md`
+- `docs/design-brief.md`
 - `docs/architecture.md`
-- `docs/guardrails.md`, if the user deliberately ran `to-guardrails` before this skill
+- `docs/guardrails.md`
 - `docs/product-idea.md`, only if `docs/prd.md` explicitly names it as an authoritative source or the user asks to use it
 
 Inspect the codebase when implementation or verification will happen in an existing project. Package scripts, CI config, tests, build config, lint/typecheck config, and deployment config can confirm available gates; they do not authorize new product scope.
@@ -39,7 +39,7 @@ Do not modify unrelated files.
 - distinction between acceptance criteria and standing DoD
 - reusable verification profile
 - hard gates, unit checks, system checks, UX/UI checks, and release gates
-- lane/state promotion gates when the product has workflow states
+- engineering lane/state promotion gates only when sources define a delivery or execution-state promotion contract
 - eval result format
 - completion evidence requirements
 - failure and blocker classification
@@ -64,7 +64,7 @@ Adapt the useful parts of proven DoD, quality-gate, planning, and eval reference
 - From `breakdown-plan`: define DoD at useful levels such as product, feature/unit, story/task, enabler, and test where sources support those levels.
 - From eval/lane-gate patterns: attach eval definitions to workflow state transitions; a lane promotion is blocked until required evals pass; evals have standard result shape and persistable evidence.
 - From SDD guardrails: source docs and confirmed code win over agent self-assessment.
-- Treat mockups, screenshots, prototypes, and visually convincing static surfaces as design/visual evidence only. They do not prove completed functionality unless connected to source-backed behavior, real state/data/actions, runner evidence, and required DoD gates.
+- Split intended truth by concern: current validated SDD owns product scope and behavior; the engineer-approved integrated prototype owns visual composition, interaction detail, and frontend presentation; architecture and guardrails own technical and risk boundaries. Treat even the Approved Visual Baseline as design/visual evidence, not proof of completed functionality, until implementation is connected to real state/data/actions, runner evidence, and required DoD gates.
 
 Do not copy these source skills wholesale:
 - Do not turn this into a command runner. This skill writes the DoD/evals source-of-truth document; it does not execute gates.
@@ -101,7 +101,7 @@ These references were used to design this skill. They are not product source fil
 Before writing, verify that sources or code identify:
 - product acceptance criteria or success conditions
 - architecture/runtime constraints that affect verification
-- workflow states, lanes, or completion transitions
+- engineering workflow lanes or completion transitions, when sources define them
 - required hard gates such as build, lint, typecheck, tests, security scan, or manual approval
 - UX/UI verification expectations
 - PR, merge, branch, commit, or release rules, if relevant
@@ -110,13 +110,15 @@ Before writing, verify that sources or code identify:
 - failure classes and blocker handling
 - which checks can be automated now versus later
 
-If verification profile, completion gates, workflow promotion rules, or merge/completion rules are missing and materially affect the document, stop and ask grill-me questions before producing the output.
+If verification profile, completion gates, workflow promotion rules, or merge/completion rules are missing, ask only when the unresolved answer materially changes product scope or a high-risk boundary. Otherwise define the smallest credible source-backed verification contract, mark unavailable runtime evidence explicitly, and continue without inventing a human approval.
 
 Ask DoD/eval questions with recommended answers based on sources. Prefer:
 - `passed` only when required gates pass with fresh evidence
-- `blocked` when P0/P1/P2 or required gates remain open
+- `blocked` when an applicable required gate, P0, P1, or a P2 explicitly classified as blocking remains open
+- non-blocking P2 and P3 findings remain visible as follow-up work and do not require operator approval or prevent completion
+- every finding records severity, release effect, applicability, source, evidence, and rationale; do not infer release effect from severity alone
 - static docs can define intended checks but cannot prove runtime behavior
-- manual approval is required for user-facing or irreversible transitions unless sources say otherwise
+- manual approval is not a default gate for user-facing transitions; require the single whole-design-baseline approval and only the risk-specific authorizations defined by guardrails for irreversible, destructive, financial, legal, public, privileged, security-sensitive, privacy-sensitive, or external effects
 
 ## Workflow
 1. Inspect the input files.
@@ -126,7 +128,7 @@ Ask DoD/eval questions with recommended answers based on sources. Prefer:
 5. Separate acceptance criteria, DoD, QA checklist items, and implementation tasks.
 6. Define the standing DoD model.
 7. Define verification profile tiers: hard gates, unit checks, system checks, UX/UI checks, evidence, static-surface limits, and release/merge checks.
-8. Define lane/state promotion gates when the product has workflow states or Kanban-like transitions.
+8. Define lane/state promotion gates only when sources define engineering delivery lanes, execution states, or completion transitions. Ordinary product UI states do not create engineering gates.
 9. Define eval result format with pass/fail/blocked status, evidence, owner, timestamp/source, and rerun rule.
 10. Define failure and blocker classification without duplicating `docs/qa-checklist.md`.
 11. Before writing the artifact, verify the planned content:
@@ -197,6 +199,14 @@ For every gate or eval include:
 - `Fail Or Block Condition`
 - `Rerun Rule`
 - `Automation Status`: `automated`, `manual`, `not available yet`, or `open question`
+
+For every finding classification include:
+- `Severity: P0 | P1 | P2 | P3`
+- `Release Effect: blocking | advisory`
+- `Applicability`
+- `Source`
+- `Evidence`
+- `Rationale`
 
 ## Final Report
 Return:

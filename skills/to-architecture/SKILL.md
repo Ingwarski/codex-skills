@@ -1,27 +1,27 @@
 ---
 name: to-architecture
-description: Use when docs/prd.md exists and the user wants architecture.md, technical architecture, system architecture, module map, integration map, data/state model, runtime model, architectural decisions, risks, or architecture source-of-truth before DoD/evals, QA, or implementation planning.
+description: Use when the current PRD, guardrails, and UX/design SDD chain exists and the user wants architecture.md, technical architecture, system architecture, module map, integration map, data/state model, runtime model, architectural decisions, risks, or architecture source-of-truth before DoD/evals, QA, or implementation planning.
 ---
 # to-architecture
 
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
-If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/architecture.md`, every load-bearing architecture decision must be source-backed, user-confirmed, codebase-confirmed, or left in `Open Questions`.
 
-If a gap-check ran, or if the skill synthesized architecture decisions not fully determined by source files or existing code, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources and code already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
+If a gap-check ran, or if the skill synthesized architecture decisions not fully determined by source files or existing code, play back the resolved decisions in a pithy summary and continue with the simplest reversible architecture that satisfies the sources unless the missing answer materially changes product scope or a high-risk boundary. Playback is not an approval gate; architecture does not create a pre-prototype design gate.
 
 ## Input
 Read:
 - `README.md`, if present
 - `docs/prd.md`
-- `docs/user-journey.md`, if present
-- `docs/screen-map.md`, if present
-- `docs/wireframes.md`, if present
-- `docs/design-brief.md`, if present
-- `docs/guardrails.md`, if the user deliberately ran `to-guardrails` before this skill
+- `docs/guardrails.md`
+- `docs/user-journey.md`
+- `docs/screen-map.md`
+- `docs/wireframes.md`
+- `docs/design-brief.md`
 - `docs/product-idea.md`, only if `docs/prd.md` explicitly names it as an authoritative source or the user asks to use it
 
 Inspect the codebase structure when implementation will happen in an existing project. Existing code, package manifests, routes, schemas, environment files, and config files can confirm architecture facts; they do not authorize new product scope.
@@ -62,7 +62,7 @@ Adapt the useful parts of proven architecture/documentation skills without impor
 - From `documentation-and-adrs`: document why, not only what; capture significant decisions, alternatives considered, rejection reasons, and consequences; preserve decision history instead of silently rewriting it.
 - From `breakdown-epic-arch`: use a high-level architecture diagram and identify technical enablers, but do not hard-code any stack or epic path.
 - From durable architecture-doc patterns: make the document useful for future agents so they do not re-derive architecture every session.
-- From SDD guardrails: source docs and confirmed code win over assistant preference, generated mockups, or generic stack defaults.
+- From SDD guardrails: PRD and journey artifacts own product behavior; the engineer-approved integrated prototype owns visual composition, interaction detail, and frontend presentation; confirmed code owns existing implementation facts; architecture owns technical boundaries. Unapproved mockups, assistant preference, and generic stack defaults override none of them.
 - Static design artifacts can inform UI architecture boundaries, but they cannot prove runtime behavior, real state/data/actions, or completed functionality.
 
 Do not copy these source skills wholesale:
@@ -103,7 +103,7 @@ Before writing, verify that sources or code identify:
 - deployment, hosting, repository, or automation constraints, if relevant
 - architecture decisions that are already settled versus open
 
-If stack, runtime, data ownership, integrations, security boundaries, or deployment constraints are missing and materially affect architecture, stop and ask grill-me questions before producing the output.
+If stack, runtime, data ownership, integrations, security boundaries, or deployment constraints are missing, ask only when the unresolved answer materially changes product scope or a high-risk boundary. Otherwise choose or defer the simplest reversible source-compatible architecture, record the open decision and migration seam, and continue.
 
 Ask architecture questions with recommended answers based on sources. Prefer:
 - preserving existing codebase architecture

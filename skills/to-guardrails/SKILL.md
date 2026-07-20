@@ -7,24 +7,19 @@ description: Use when an SDD workflow needs AI guardrails, source-of-truth order
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
-If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/guardrails.md`, every load-bearing rule must be source-backed, user-confirmed, or left in `Open Questions`.
 
-If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
+If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions in a pithy summary and continue with the smallest reversible, source-grounded rule unless the missing answer would materially change product scope or a high-risk action. Playback is not an approval gate; guardrails do not select or approve a design direction.
 
 ## Input
 Read:
 - `README.md`, if present
 - `docs/prd.md`
-- `docs/user-journey.md`, if present
-- `docs/screen-map.md`, if present
-- `docs/wireframes.md`, if present
-- `docs/design-brief.md`, if present
-- `docs/architecture.md`, if present from the `to-architecture` step
-- `docs/dod-evals.md`, if present from the `to-dod-evals` step
+- `docs/product-idea.md`, only when `docs/prd.md` names it as authoritative or the user asks to use it
 
-This skill can run any time after `docs/prd.md` exists. Running it before the design artifacts is recommended, so they are produced under these guardrails. Re-run it after the UX artifacts exist to add design-authority rules.
+This skill runs after `docs/prd.md` and before downstream UX, architecture, DoD/eval, and QA artifacts. Re-run it only when the PRD, an explicitly authoritative product-idea source, or a user decision invalidates a named rule or introduces a new authority/risk boundary. Never read downstream artifacts back into guardrails; this keeps the dependency graph acyclic.
 
 ## Output
 Create or update exactly one artifact:
@@ -59,14 +54,14 @@ Other artifacts may follow these rules, but they must not duplicate this documen
 
 ## Proven Mechanics To Use
 - Evidence before claims, as an operational gate: identify what proves the claim, run it fresh, read the full output, and only then state the result with the evidence. No success, completion, quality, or compliance claim without this sequence.
-- Spines and source docs win over generated mockups, implementation guesses, and assistant preference.
+- Split authority by concern: PRD and journey artifacts own product scope and behavior; after the engineer's one whole-prototype approval, the Approved Visual Baseline owns visual composition, interaction detail, and frontend presentation; architecture, guardrails, and applicable standards own technical, safety, accessibility, privacy, and legal boundaries. Before approval, wireframes and design-brief spines guide candidate generation. Generic defaults, unapproved mockups, implementation guesses, and assistant preference never override these sources.
 - A mockup, screenshot, prototype, or visually convincing static surface is design/visual evidence only; it is not completed functionality unless connected to source-backed behavior, real state/data/actions, runner evidence, and required DoD gates.
 - Extract, do not ingest: when sources are long, pull only the relevant decisions and cite them. Do not paraphrase entire source files into this artifact.
 - Right-size rigor to stakes: hobby, internal, consumer, paid, regulated, accessibility-critical, or safety-sensitive products need different guardrails.
-- Define what the AI may decide alone, what it may propose but not finalize, and what requires explicit user approval.
+- Default to autonomous reversible decisions within approved product intent. Define exactly one normal design approval for the complete integrated prototype and reserve separate just-in-time authorization for irreversible, destructive, financial, legal, public, security-sensitive, privacy-sensitive, privileged, or external side effects.
 - Preserve artifact boundaries: later docs may reference earlier docs, not silently rewrite them.
-- Stop before acting when a named source, visual reference, design system, or requirement cannot be accessed.
-- Do not silently ignore unavailable files, screenshots, links, tokens, or brand materials.
+- Stop before acting when an inaccessible named source, design system, or requirement is material to product scope, a compliance claim, or a high-risk action. An inaccessible aesthetic reference alone does not create a pre-prototype approval gate: record it, disclose the fallback, and continue with source-grounded candidate directions when possible.
+- Never silently ignore unavailable files, screenshots, links, tokens, or brand materials; classify their materiality and trace the fallback or blocker.
 
 ## Gap-Check
 Before writing, verify that sources identify:
@@ -80,14 +75,14 @@ Before writing, verify that sources identify:
 - which visual/design sources are authoritative, if any
 - whether AI may propose aesthetic options or must wait for user-provided direction
 
-If authority, autonomy, forbidden actions, or conflict rules are missing or contradictory, stop and ask grill-me questions before producing the output.
+If authority, autonomy, forbidden actions, or conflict rules are missing or contradictory and the unresolved answer materially changes product scope, compliance, or a high-risk boundary, stop and ask grill-me questions before producing the output. Otherwise use the recommended stakes baseline, record the reversible choice, and continue.
 
 ### Default Baseline For Recommendations
 Sources rarely state guardrails explicitly. Do not run an open-ended interview. Identify the stakes tier first, present the matching baseline as the recommended answer for each gap-check question, and grill only on deviations and items the user marks as sensitive.
 
-- Hobby / internal: AI may decide layout details, copy proposals, and technical structure alone; proposes scope and visual direction; user approves scope changes and deletions.
-- Consumer / paid: AI proposes but does not finalize visual direction, scope, terminology, or anything user-facing; user approves before artifacts change; evidence required for completion claims.
-- Regulated / accessibility-critical / sensitive data: AI decides nothing user-facing alone; every claim source-backed; accessibility and compliance items always require explicit user approval and named evidence.
+- Hobby / internal: AI may autonomously create and revise reversible SDD, layout, copy, visual, and technical details inside product intent. Ask only for material scope changes, deletion without safe recovery, the one whole-design approval, or a high-risk action.
+- Consumer / paid: AI may autonomously create, revise, reconcile, and validate reversible user-facing details inside approved product intent. The engineer approves the complete integrated prototype once; ordinary artifact, screen, terminology, and transition changes do not require separate approval. Evidence remains required for completion claims.
+- Regulated / accessibility-critical / sensitive data: AI may draft and revise source-backed artifacts autonomously, but compliance claims and high-risk effects require named evidence and risk-specific authorization. Do not require approval for every user-facing edit; retain the one whole-design approval and escalate only material product intent or regulated/high-risk decisions.
 
 ## Workflow
 1. Inspect the input files.

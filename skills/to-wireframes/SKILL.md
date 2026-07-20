@@ -7,11 +7,11 @@ description: Use when docs/screen-map.md exists and the user wants wireframes, l
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
-If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/wireframes.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
 
-If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
+If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions in a pithy summary and continue with the smallest reversible, source-grounded choice unless the missing answer materially changes product scope or a high-risk boundary. Playback is not an approval gate; intermediate wireframes and pre-approval design choices do not require approval.
 
 ## Input
 Read:
@@ -19,7 +19,7 @@ Read:
 - `docs/prd.md`
 - `docs/user-journey.md`
 - `docs/screen-map.md`
-- `docs/guardrails.md`, if the user deliberately ran `to-guardrails` before this skill
+- `docs/guardrails.md`
 
 ## Output
 Create or update exactly one artifact:
@@ -52,7 +52,7 @@ It must not define:
 The final product goal is high-quality UX/UI design. This artifact supports that goal by making the product structure clear before visual decisions are made.
 
 ## Proven Mechanics To Use
-- Run a design-brief gate before wireframing: confirm what each screen must help the user do, what visual or product system should be respected, and how interactive the final experience is expected to be.
+- Run a wireframe-readiness preflight, not a design-brief gate and not a human approval: derive what each screen must help the user do, which structural or existing-system constraints apply, and how interactive the final experience must be from the PRD, journey, screen map, guardrails, and available product evidence. The dependency order is `screen-map -> wireframes -> design-brief -> whole-product prototype`; `docs/wireframes.md` must never depend on `docs/design-brief.md`. Defer typography, color, visual mood, tokens, and component styling to the later design brief. Missing non-material visual direction does not block structural wireframes.
 - Use a concrete notation, not prose. For every screen: an ordered content-zone list with a hierarchy level and priority per zone; an ASCII layout sketch for any screen whose layout is not a single column; state variants expressed as deltas from the default blueprint (for example: "Error: zone 3 replaced by inline message; primary CTA disabled").
 - Prefer source capture over guessing. If an existing product, design system, screenshot, Storybook, component library, or token file exists, use it as grounding material.
 - Differentiate structure before style: vary hierarchy, grouping, interaction model, and CTA emphasis before discussing brand style.
@@ -71,7 +71,7 @@ Before writing, verify that sources identify:
 - whether an existing design system or component set must be respected
 - expected interactivity depth for the later implementation
 
-If block priority, CTAs, forms, or state behavior are missing or contradictory, stop and ask grill-me questions before producing the output.
+If block priority, CTAs, forms, or state behavior are missing or contradictory, ask only when the unresolved answer materially changes product scope or a high-risk boundary. Otherwise choose the smallest reversible structure that satisfies the screen map and journey, record it, and continue.
 
 ## Workflow
 1. Inspect the input files.

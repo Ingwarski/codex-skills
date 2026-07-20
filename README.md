@@ -1,54 +1,62 @@
 # Codex SDD Skills
 
-This repository contains a small chain of Codex skills for moving from a PRD to product UX/UI planning, architecture, DoD/evals, QA, and implementation planning.
+This repository contains a design-first Codex SDD pipeline for moving from a basic product idea through a coherent pre-design specification, exactly three runnable prototype candidates, one whole-design approval, and implementation planning for a production frontend and backend.
 
-The skills are designed for **SDD - Specification Driven Development**. They are not a TDD workflow and they are not generic prompt templates. Each skill creates exactly one artifact, uses source files as the source of truth, and asks focused questions before writing when critical information is missing.
+The skills are designed for **SDD - Specification Driven Development**. They are not a TDD workflow and they are not generic prompt templates. Each artifact-owner skill creates exactly one domain artifact. `to-sdd-pipeline` owns only the machine-readable orchestration manifest and invokes or re-invokes artifact owners autonomously.
 
 ## Skill Chain
 
-Use the skills in this order:
+Use `to-sdd-pipeline` as the autonomous entrypoint. It dispatches this acyclic graph:
 
 ```text
-to-prd
+product-idea -> to-prd
+-> to-guardrails
 -> to-user-journey
 -> to-screen-map
 -> to-wireframes
 -> to-design-brief
 -> to-architecture
 -> to-dod-evals
--> to-guardrails
--> to-qa-checklist
+-> to-qa-checklist (proposed visual checks)
+-> three prototype candidates
+-> one whole-design approval
+-> design-brief and QA reconciliation
 -> to-development-plan
 ```
 
-`to-prd` is not included in this repository. These skills start after `docs/prd.md` exists.
+`to-prd` is the first domain-artifact owner dispatched by `to-sdd-pipeline` after `docs/product-idea.md` exists. `docs/wireframes.md` never depends on the later design brief, and the development plan is deliberately post-approval because it consumes the Approved Visual Baseline.
 
 ## Included Skills
 
 | Skill | Output | Purpose |
 |---|---|---|
+| `to-sdd-pipeline` | `forge/sdd-manifest.json` | Dispatches artifact owners, tracks dependencies and hashes, runs prototype comparison, resumes after the one approval, and propagates invalidation without editing domain artifacts directly. |
+| `to-prd` | `docs/prd.md` | Converts the product idea and current project evidence into the first file-based domain artifact without issue-tracker side effects. |
 | `to-user-journey` | `docs/user-journey.md` | Maps the real user, goal, context, journey stages, friction, decisions, failure path, and success state. |
 | `to-screen-map` | `docs/screen-map.md` | Defines screens, surfaces, routes, navigation, transitions, entry/exit points, and the canonical state list per screen. |
 | `to-wireframes` | `docs/wireframes.md` | Converts the screen map into low-fidelity screen structures, hierarchy, CTAs, forms, content zones, and state variants. |
-| `to-design-brief` | `docs/design-brief.md` | Defines the UX/UI direction, Design Spine, Experience Spine, visual system, interaction rules, responsive behavior, accessibility floor, and design handoff guidance. |
+| `to-design-brief` | `docs/design-brief.md` | Defines the UX/UI direction and owns the single canonical Approved Visual Baseline manifest after whole-prototype approval. |
 | `to-architecture` | `docs/architecture.md` | Defines system architecture, modules, boundaries, data/state model, integrations, runtime model, architecture decisions, and risks. |
 | `to-dod-evals` | `docs/dod-evals.md` | Defines Definition of Done, reusable eval gates, verification profile, evidence requirements, state/lane gates, and PR/merge completion rules. |
 | `to-guardrails` | `docs/guardrails.md` | Defines source-of-truth order, AI autonomy boundaries, scope limits, conflict handling, stop conditions, and verification policy. |
 | `to-qa-checklist` | `docs/qa-checklist.md` | Creates a source-backed QA checklist with acceptance, UX/UI, responsive, accessibility, visual regression, evidence, and release-readiness checks. |
-| `to-development-plan` | `docs/development-plan.md` | Converts approved SDD artifacts into implementation units, dependency order, acceptance checks, and verification steps. |
+| `to-development-plan` | `docs/development-plan.md` | Converts the current validated SDD plus Approved Visual Baseline into frontend/backend units, interface seams, dependency order, acceptance checks, and verification steps. |
 
 ## Core Rules
 
 All skills follow the same operating contract:
 
 - AI is not the source of truth. Source files and explicit user answers are.
-- If critical information is missing, the skill must run a focused grill-me gap-check before writing the output artifact.
+- Discoverable information must be read from sources or code instead of asked. A focused grill-me gap-check runs only for genuinely non-inferable information that materially changes product scope, the whole-design baseline, or a high-risk boundary.
+- Non-material gaps use the smallest reversible source-grounded default, are recorded, and do not become approval gates.
 - The skill creates only the final output file. No draft output files.
 - Unverified assumptions are not written into artifacts.
 - Anything not source-backed or user-confirmed goes to `Open Questions`.
 - Each skill creates or updates exactly one artifact.
+- The orchestrator never edits a domain artifact directly; it dispatches the owning skill and owns only `forge/sdd-manifest.json`.
 - Artifacts reference prior artifacts instead of duplicating them.
 - Artifact boundaries must be preserved.
+- The only normal design approval is approval of the complete integrated prototype. Risk-specific authorization is separate and just in time.
 
 ## Artifact Boundaries
 
@@ -57,12 +65,13 @@ The documents are intentionally separated:
 - `user-journey.md` owns user behavior and journey logic.
 - `screen-map.md` owns which screens and states exist.
 - `wireframes.md` owns screen structure and state structure.
-- `design-brief.md` owns visual and experience direction.
+- `design-brief.md` owns visual and experience direction plus the single canonical Approved Visual Baseline section. The approved prototype owns concrete visual composition, interaction detail, and frontend presentation; PRD/journey artifacts own product behavior.
 - `architecture.md` owns system architecture, module boundaries, data/state model, integrations, runtime model, and architecture decisions.
 - `dod-evals.md` owns Definition of Done, reusable gates, eval result format, completion evidence requirements, and completion rules.
 - `guardrails.md` owns AI behavior, source-of-truth policy, and behavioral evidence policy.
 - `qa-checklist.md` owns concrete verification checks and per-check evidence artifacts.
 - `development-plan.md` owns implementation units and build order.
+- `forge/sdd-manifest.json` owns orchestration state, owner mapping, source/content hashes, dependency status, invalidation, and resume state; it does not own domain truth.
 
 If one artifact needs information from another, it should cite or reference that artifact rather than restating it.
 
@@ -74,6 +83,8 @@ Recommended local install with symlinks:
 
 ```bash
 mkdir -p ~/.codex/skills
+ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-sdd-pipeline" ~/.codex/skills/to-sdd-pipeline
+ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-prd" ~/.codex/skills/to-prd
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-user-journey" ~/.codex/skills/to-user-journey
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-screen-map" ~/.codex/skills/to-screen-map
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-wireframes" ~/.codex/skills/to-wireframes
@@ -92,7 +103,7 @@ If a symlink already exists, remove or update only that symlink. Do not overwrit
 Start in a product project that has at least:
 
 ```text
-docs/prd.md
+docs/product-idea.md
 ```
 
 Useful optional project context:
@@ -101,47 +112,30 @@ Useful optional project context:
 README.md
 ```
 
-Do not create extra context documents just to satisfy this pipeline. The skills should use `docs/prd.md`, the relevant earlier pipeline artifacts, and explicit user answers as the source of truth. `docs/guardrails.md` is not a starting input; it is created by `to-guardrails` and can only be used by later skills or by earlier skills if the user deliberately ran guardrails first.
+Do not create extra context documents merely to satisfy ceremony. The orchestrator creates the smallest coherent set required by the product, while the complete DAS Forge path includes current product/UX, guardrail, architecture, DoD/eval, and QA sources before prototype approval and production planning.
 
-Then ask Codex to run each skill in sequence.
-
-Example:
+Ask Codex to run the orchestration skill:
 
 ```text
-Use to-user-journey for this project.
+Use to-sdd-pipeline for this project.
 ```
 
-Then:
+The orchestrator dispatches every ready artifact owner without asking the user to continue. It pauses only for a material product-scope decision, the one whole-design approval, or a just-in-time high-risk authorization. `to-guardrails` runs after the PRD and is regenerated only when a named upstream change invalidates one of its rules; the mere appearance of later UX files is not a rerun trigger.
 
-```text
-Use to-screen-map for this project.
-Use to-wireframes for this project.
-Use to-design-brief for this project.
-Use to-architecture for this project.
-Use to-dod-evals for this project.
-Use to-guardrails for this project.
-Use to-qa-checklist for this project.
-Use to-development-plan for this project.
-```
-
-`to-guardrails` can also be run earlier, any time after `docs/prd.md` exists. Running it before design artifacts is useful when you want the whole pipeline constrained by explicit AI behavior rules. Re-run it later after UX artifacts exist if design-authority rules need to be added.
-
-`to-architecture` and `to-dod-evals` should run before `to-qa-checklist` and `to-development-plan` when the product needs architecture and completion gates as source-of-truth documents. `to-dod-evals` requires an approved `docs/architecture.md`; if a tiny project does not need separate architecture or completion artifacts, skip both and keep that decision explicit in downstream `Open Questions`. `to-qa-checklist` verifies those contracts; it does not replace them.
-
-Keep the chain skippable rather than ceremonial for tiny projects: run optional artifacts only when their owned decisions are needed as source truth.
+Individual owner skills remain callable for targeted artifact work. In that mode the caller is responsible for their documented prerequisites and invalidation. Artifact readiness means validated/current, not separately human-approved.
 
 ## What Happens When Information Is Missing
 
 The skills should not invent missing product decisions.
 
-When a blocker-level gap exists, the skill should stop before writing the output file and ask focused questions. The question style follows a grill-me pattern:
+When a genuinely material, non-inferable gap exists, the skill should stop before writing the output file and ask focused questions. The question style follows a grill-me pattern:
 
 - ask one question at a time when the answer affects the next question;
 - include a recommended answer;
 - inspect source files or the codebase instead of asking when the answer can be found there;
-- continue only after the missing decision is resolved.
+- continue only after the material missing decision is resolved.
 
-If the gap is not blocking, the skill should write the artifact and list the unresolved item in `Open Questions`.
+If the gap is not blocking, the skill should use the smallest reversible source-grounded choice, write the artifact, trace the choice, and list any residual uncertainty in `Open Questions`.
 
 ## Design Quality
 
@@ -154,7 +148,11 @@ The UX/UI part of the chain is built around proven product-design mechanisms:
 - visual-system inheritance when a project already has tokens, components, or a design system;
 - accessibility and responsive behavior as default requirements;
 - validation before the design brief is written;
-- a distinctiveness check so the design does not collapse into generic AI UI.
+- a distinctiveness check so the design does not collapse into generic AI UI;
+- exactly three whole-product interactive candidates on three separate external-browser pages;
+- recommendation without automatic selection;
+- one engineer approval of the selected complete integrated design baseline;
+- a frozen visual-target reference and content hash for reproducible implementation and QA.
 
 For operational products, a deliberate restraint principle can be the right design decision. The skills should not force decorative design when the product needs density, clarity, and repeat-use efficiency.
 
@@ -167,12 +165,14 @@ For operational products, a deliberate restraint principle can be the right desi
 - `P2`: moderate drift or fixable gap.
 - `P3`: polish.
 
-Release readiness is binary:
+Severity and release effect are separate:
 
-- `passed` only when no P0-P2 items remain open.
-- `blocked` when P0-P2 blockers remain.
+- P0 and P1 are blocking.
+- P2 blocks only when it violates a required source-backed gate, critical journey, applicable accessibility/security/privacy/legal/payment/data-integrity constraint, supported viewport/device, or approved hierarchy/interaction meaning, or when related P2s combine into P1 impact.
+- Other P2 and all P3 findings are advisory follow-up and do not create approvals.
+- Release readiness remains binary: `passed` when applicable gates and blocking findings are closed; otherwise `blocked`.
 
-`to-development-plan` is SDD-first. Tests and verification support the approved spec, but they do not become the source of product truth.
+`to-development-plan` is SDD-first. Tests and verification support the current validated spec, but they do not become the source of product truth. User-visible units map the Approved Baseline ID; cross-layer units name interfaces produced/consumed and integration evidence; prototype code is only an optional traced frontend seed, never proof of production backend, auth, persistence, or integrations.
 
 `to-dod-evals` separates acceptance criteria from Definition of Done. Acceptance criteria confirm that a specific item was built correctly; DoD/eval gates define the standing completion bar and evidence required before anything can be called done. A mockup, screenshot, prototype, or visually convincing static surface is design/visual evidence only; it is not completed functionality unless connected to source-backed behavior, real state/data/actions, runner evidence, and required DoD gates.
 
@@ -201,6 +201,10 @@ These references are authoring provenance, not product source files. During a pr
 
 ```text
 skills/
+  to-sdd-pipeline/
+    SKILL.md
+  to-prd/
+    SKILL.md
   to-user-journey/
     SKILL.md
   to-screen-map/

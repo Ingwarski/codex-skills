@@ -7,18 +7,18 @@ description: Use when docs/prd.md and docs/user-journey.md exist and the user wa
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
-If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/screen-map.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
 
-If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
+If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions in a pithy summary and continue with the smallest reversible, source-grounded choice unless the missing answer materially changes product scope or a high-risk boundary. Playback is not an approval gate; intermediate screen-map artifacts and pre-approval design choices do not require approval.
 
 ## Input
 Read:
 - `README.md`, if present
 - `docs/prd.md`
 - `docs/user-journey.md`
-- `docs/guardrails.md`, if the user deliberately ran `to-guardrails` before this skill
+- `docs/guardrails.md`
 
 ## Output
 Create or update exactly one artifact:
@@ -65,7 +65,7 @@ Before writing, verify that sources identify:
 - any modal, drawer, notification, email, or system surface that is required to complete the journey
 - whether the product is single-surface, multi-surface, mobile, web, desktop, or cross-device
 
-If routes, completion paths, or state logic are missing or contradictory, stop and ask grill-me questions before producing the output.
+If routes, completion paths, or state logic are missing or contradictory, ask only when the unresolved answer materially changes product scope or a high-risk boundary. Otherwise derive the smallest reversible navigation/state model from the validated journey, record it, and continue.
 
 ## Workflow
 1. Inspect the input files.

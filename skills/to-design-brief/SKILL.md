@@ -7,13 +7,13 @@ description: Use when docs/wireframes.md exists and the user wants the design br
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
-If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
-For aesthetic direction, the assistant may propose 2-3 clearly labeled options during gap-check, but the final brief must use only a direction supported by source files or explicitly selected by the user.
+For aesthetic direction, the assistant may define up to three clearly labeled, source-grounded candidate directions. Do not require the user to select one before the brief or prototype candidates are created. Record shared constraints, candidate differences, and rationale; the final visual direction is established only by the engineer-approved integrated prototype.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/design-brief.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
 
-If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report. For this skill, UX/UI direction is usually synthesis, so playback is expected unless the exact visual direction was already confirmed.
+If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions in a pithy summary and continue with the smallest reversible, source-grounded choice unless the missing answer would materially change product scope or a high-risk action. Playback is not an approval gate. Pre-approval design ambiguity becomes candidate directions; the only normal design approval is the engineer's approval of the complete integrated prototype after candidate comparison.
 
 ## Input
 Read:
@@ -22,7 +22,7 @@ Read:
 - `docs/user-journey.md`
 - `docs/screen-map.md`
 - `docs/wireframes.md`
-- `docs/guardrails.md`, if the user deliberately ran `to-guardrails` before this skill
+- `docs/guardrails.md`
 
 ## Output
 Create or update exactly one artifact:
@@ -46,6 +46,7 @@ Do not modify unrelated files.
 - responsive behavior
 - accessibility floor
 - design handoff guidance
+- approved visual-baseline metadata and references after the whole prototype is approved
 
 For states: `docs/screen-map.md` owns which states exist per screen; `docs/wireframes.md` owns each state's structure; this file owns system-wide state appearance and behavior patterns. Reference the screen-map state list; do not re-derive it.
 
@@ -63,7 +64,7 @@ Adapt the strongest UX Coach mechanics into a single SDD artifact:
 - Treat the brief as two spines inside one file: `Design Spine` and `Experience Spine`.
 - The Design Spine is the visual contract: brand/style, colors, typography, spacing, radius, elevation, component appearance, visual do/don't rules.
 - The Experience Spine is the behavior contract: form factor, IA implications, voice/tone rules, component behavior, state patterns, interaction primitives, accessibility, key flows.
-- Spines win over mockups. Wireframes, screenshots, Stitch output, v0 output, or Figma explorations are illustrations, not the source of truth.
+- Before design approval, the Design Spine and Experience Spine guide candidate generation. After the engineer approves the complete integrated prototype, the `Approved Visual Baseline` section in this file is the single canonical baseline manifest and becomes the concrete source of truth for visual composition, interaction detail, and frontend presentation. Do not create a second competing baseline receipt elsewhere. The spines remain authoritative for reusable system rules, unshown states, responsive behavior, and accessibility, and must be reconciled with the approved baseline. PRD and journey artifacts remain authoritative for product scope and behavior. Unapproved explorations never override either source.
 - Keep a `Decision Log` for selected directions, rejected directions, scope cuts, tool choices, and user overrides.
 - Run a concern scan: accessibility, platform conventions, brand voice, regulated language, motion, internationalization, dark mode, offline behavior, content density, input modalities, notifications, AI control and reversibility.
 - Surface UI system inheritance. If shadcn, MUI, Tailwind, native UIKit, Compose, or an internal design system exists, extend or reference it instead of inventing a parallel system.
@@ -92,7 +93,7 @@ Before writing, verify that sources identify:
 - expected interactivity and motion level
 - whether the user wants a fast path with explicit assumptions or a coached path with decisions resolved section by section
 
-If visual direction, audience, density, or platform priorities are missing or contradictory, stop and ask grill-me questions before producing the output.
+If audience, product category, platform priorities, existing-system inheritance, or another constraint is missing or contradictory, ask only when the answer would materially change product scope or a high-risk boundary. Missing aesthetic direction alone is not a blocker: derive up to three source-grounded candidate directions, record the reversible assumptions, and continue to whole-prototype comparison.
 
 ## Workflow
 1. Inspect the input files.
@@ -102,17 +103,18 @@ If visual direction, audience, density, or platform priorities are missing or co
 5. Run the concern scan and decide which concerns deserve sections.
 6. Define a source-backed Design Spine.
 7. Define a source-backed Experience Spine.
-8. Critique the planned Design Spine against generic AI defaults: templated palettes, interchangeable type pairings, decorative filler, and styles that could belong to any product in the category. Name one signature element or one deliberate restraint principle grounded in the product's domain, and state where the design spends or withholds boldness. If the direction is not product-specific, revise it or raise clearly labeled aesthetic options for the user to select.
+8. Critique the planned Design Spine against generic AI defaults: templated palettes, interchangeable type pairings, decorative filler, and styles that could belong to any product in the category. Name one signature element or one deliberate restraint principle grounded in the product's domain, and state where the design spends or withholds boldness. If the direction is not product-specific, revise it or turn the strongest source-grounded alternatives into clearly labeled prototype candidates for whole-design comparison; do not add a pre-prototype selection gate.
 9. Define semantic tokens and component appearance principles without overbuilding a design-system monster.
 10. Define responsive, accessibility, state, and interaction expectations.
 11. Add handoff prompts or guidance for Figma, v0, Stitch, or Codex only when useful and only from captured content.
 12. Run the Validation Pass defined below before creating or updating the artifact.
-13. Avoid changing scope, adding screens, or rewriting wireframes.
-14. Before writing the artifact, verify the planned content:
+13. When an integrated prototype has been approved, update the canonical `Approved Visual Baseline` section with its stable Baseline ID, selected candidate/version, artifact references, coverage, approval receipt, and permitted variance. Do not create another design approval. When a later approved whole supersedes the baseline, record the prior ID and receipt in the Decision Log and record downstream invalidation intent in this artifact. Only the orchestrator changes manifest/runtime status, re-invokes QA and development-plan owners, and marks affected production units invalidated.
+14. Avoid changing scope, adding screens, or rewriting wireframes.
+15. Before writing the artifact, verify the planned content:
    - Every load-bearing claim traces to a named source file or an explicit user answer, or it is moved to `Open Questions`.
    - No content belongs to another artifact's ownership per the Artifact Boundary.
    - No placeholder text and no generic filler written to satisfy the template.
-15. Create or update only `docs/design-brief.md`.
+16. Create or update only `docs/design-brief.md`.
 
 ## Validation Pass
 Run both passes on the planned artifact content. Record results in the artifact's `Validation Report` as findings ranked by downstream impact: Critical, High, Medium, Low. If a pass has no findings, state `0 findings` for that pass.
@@ -132,7 +134,7 @@ Pass 2 - Judgment:
 ## Required Output Structure
 Use this structure:
 
-Required contract sections are `Source References`, `Design Brief`, `Decision Log`, `Product Experience Goal`, `Design Spine`, `Experience Spine`, `Validation Report`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
+Required contract sections are `Source References`, `Design Brief`, `Decision Log`, `Product Experience Goal`, `Design Spine`, `Experience Spine`, `Approved Visual Baseline`, `Validation Report`, and `Open Questions`. Before prototype approval, `Approved Visual Baseline` uses `Status: proposed`; after approval it must identify the approved whole. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. List omitted optional sections in the Final Report.
 
 ```markdown
 # Design Brief
@@ -192,6 +194,20 @@ Token values live only in `### Design Tokens`; other spine sections reference to
 ## Responsive And Platform Behavior
 
 ## Design Handoff Prompt
+
+## Approved Visual Baseline
+
+- Status: proposed | approved | superseded
+- Baseline ID:
+- Selected Candidate And Version:
+- Immutable Visual Target Reference And Hash:
+- Prototype Artifact References:
+- Covered Screens States And Viewports:
+- Approval Receipt:
+- Approved At:
+- Permitted Variance:
+- Supersedes:
+- Downstream Invalidation:
 
 ## Validation Report
 

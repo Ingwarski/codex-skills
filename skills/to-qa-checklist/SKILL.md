@@ -1,17 +1,17 @@
 ---
 name: to-qa-checklist
-description: Use when approved SDD product, UX, architecture, and DoD/eval artifacts exist and the user wants a QA checklist, acceptance checks, accessibility checks, responsive checks, visual regression checks, or release-readiness criteria.
+description: Use when the current product, UX, architecture, guardrail, and DoD/eval SDD artifacts exist and the user wants a QA checklist, acceptance checks, accessibility checks, responsive checks, visual regression checks, or release-readiness criteria. Artifact readiness is a validation state, not a human approval.
 ---
 # to-qa-checklist
 
 ## Universal SDD Rule
 AI is not the source of truth. Source files and explicit user answers are the source of truth. Mirror source terminology exactly; when sources use conflicting terms for one concept, do not pick silently - ask or flag it in `Open Questions`, then record the canonical term and aliases to avoid.
 
-If blocker-level information is missing from the source files, do not create or update the output file yet. Use a focused grill-me gap-check first. Resolve the decision tree one branch at a time, ask one question at a time when the answer affects the next question, and include a recommended answer with each question. If the answer can be found by inspecting source files or the codebase, inspect instead of asking. Do not turn guesses into facts.
+If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/qa-checklist.md`, every checklist group must be source-backed, user-confirmed, or left in `Open Questions`.
 
-If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions to the user in a pithy summary and proceed only after confirmation. If sources already confirm this exact direction, create the artifact and surface the decisions in the Final Report.
+If a gap-check ran, or if the skill synthesized decisions not fully determined by source files, play back the resolved decisions in a pithy summary and continue with the smallest reversible, source-grounded check unless the missing answer materially changes product scope or a high-risk boundary. Playback is not an approval gate. If a correction would change an already Approved Visual Baseline, record `baseline_change_required` for the orchestrator instead of asking or approving inside this skill.
 
 ## Input
 Read:
@@ -21,9 +21,10 @@ Read:
 - `docs/screen-map.md`
 - `docs/wireframes.md`
 - `docs/design-brief.md`
-- `docs/architecture.md`, if present from the `to-architecture` step
-- `docs/dod-evals.md`, if present from the `to-dod-evals` step
-- `docs/guardrails.md`, if present from the `to-guardrails` step
+- the canonical `Approved Visual Baseline` section inside `docs/design-brief.md` and its referenced prototype artifacts, when its status is `approved`
+- `docs/architecture.md`
+- `docs/dod-evals.md`
+- `docs/guardrails.md`
 
 ## Output
 Create or update exactly one artifact:
@@ -71,9 +72,9 @@ Reference source artifacts instead of repeating their full content.
 - Include complete state checks: default, hover, focus, active, disabled, loading, empty, error, success, long-content, offline, permission-denied, and repeat-click where relevant.
 - Include responsive reflow and zoom resilience checks.
 - Include keyboard access, focus behavior, labels, instructions, errors, target sizes, motion, timing, and state-change communication.
-- For visual QA, compare against source docs, wireframes, design brief, and any approved mockups. Mockups do not override source docs.
-- Assign a severity to every check: P0 blocks core use or is a severe accessibility failure; P1 is a major mismatch or usability regression; P2 is moderate drift or a fixable gap; P3 is polish.
-- Release readiness is binary: `passed` only when no P0-P2 items remain open; otherwise `blocked` with the blockers named. P3 items may remain as follow-up.
+- For QA, compare product scope and behavior against the current validated SDD; compare visual composition, interaction detail, and frontend presentation against the engineer-approved integrated prototype recorded in the canonical `Approved Visual Baseline` section of `docs/design-brief.md`; verify technical, accessibility, privacy, legal, and safety boundaries against architecture, guardrails, and applicable standards. Wireframes and the design brief guide uncovered states and reusable rules but do not override the approved visual baseline. Generic defaults apply only where current sources are silent.
+- Assign severity and release effect separately. P0 and P1 are blocking. P2 is blocking only when it violates a source-backed required gate, affects a primary or critical journey, violates an applicable accessibility, security, privacy, legal, payment, or data-integrity requirement, breaks a supported viewport or device, materially changes approved hierarchy or interaction meaning, or combines with related findings into P1 impact. Other P2 findings are advisory. P3 is polish and advisory.
+- Release readiness is binary: `passed` when every applicable required gate and every blocking finding is closed; otherwise `blocked` with the blockers named. Advisory P2 and P3 findings may remain with evidence and a concrete follow-up action; they do not create an approval gate.
 - Use concrete floors as defaults, overridable by sources: touch targets at least 44x44px where touch interaction matters, with at least 8px gaps; text contrast at least 4.5:1 and at least 3:1 for large text in both light and dark themes; mobile input text at least 16px to prevent iOS auto-zoom; body text usually 14-16px depending on product type; visible focus on all interactive elements; no emoji as icons; no horizontal page overflow; reduced-motion respected; breakpoints 390, 430, 768, 1280, and 1440px unless sources specify devices.
 
 ## Gap-Check
@@ -90,11 +91,11 @@ Before writing, verify that sources identify:
 - source of visual truth for UI comparison, if any
 - verification limits, if some checks require implementation rather than docs
 
-If acceptance criteria, required states, or target platforms are missing and cannot be safely derived from sources, stop and ask grill-me questions before producing the output.
+If acceptance criteria, required states, or target platforms are missing and cannot be derived from current sources, ask only when the unresolved answer materially changes product scope or a high-risk boundary. Otherwise use the smallest applicable source-backed or documented fallback check, record applicability and evidence limits, and continue.
 
 ## Workflow
 1. Inspect the input files.
-2. Derive checks only from approved SDD artifacts.
+2. Derive checks only from current validated SDD artifacts. Before prototype approval, define visual verification against the proposed design contract without pretending that an Approved Visual Baseline exists. After whole-prototype approval, update this artifact against the Baseline ID, immutable visual-target reference/hash, and referenced prototype without requesting another approval. A changed or superseded Baseline ID or target hash invalidates the affected visual checks and requires this artifact to be regenerated before development planning or release evaluation continues.
 3. Group checklist items by product behavior, journey, screens, states, UX/UI, responsive, accessibility, and release readiness.
 4. Include source references for important checklist groups. `Product Acceptance` items must cite the PRD requirement or user story they verify instead of restating it.
 5. Include checks that verify architecture and DoD/eval contracts when `docs/architecture.md` or `docs/dod-evals.md` exist, without redefining those contracts.
@@ -110,7 +111,7 @@ If acceptance criteria, required states, or target platforms are missing and can
 ## Required Output Structure
 Use this structure:
 
-Required contract sections are `Source References`, `Product Acceptance`, `Screen And State Checks`, `UX/UI Checks`, `Evidence Requirements`, `Evidence Limits`, `Release Readiness`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. Every checklist item carries a severity (P0-P3). `Release Readiness` must conclude with exactly `passed` or `blocked`, with blockers named when blocked. List omitted optional sections in the Final Report.
+Required contract sections are `Source References`, `Product Acceptance`, `Screen And State Checks`, `UX/UI Checks`, `Evidence Requirements`, `Evidence Limits`, `Release Readiness`, and `Open Questions`. Optional sections may be omitted when sources give them no content. Required sections may use a single line `Not applicable: <reason>` only when the reason is source-backed. Never fill a section to satisfy the template. When the baseline is approved, `Source References` records its Baseline ID. Every checklist item carries `Severity: P0 | P1 | P2 | P3`, `Release Effect: blocking | advisory`, applicability, source, evidence, and rationale. `Release Readiness` must conclude with exactly `passed` or `blocked`, with blockers named when blocked. List omitted optional sections in the Final Report.
 
 ```markdown
 # QA Checklist
