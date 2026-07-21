@@ -95,7 +95,7 @@ Before writing, verify that sources identify:
 - required verification commands, if available
 - existing architecture, file structure, or component system when a codebase exists
 - deployment or runtime constraints that affect build order
-- prototype-code reuse policy and missing production capabilities, when runnable prototype code exists
+- optional presentation-layer mockup-code reuse policy and every missing production capability, when code-backed interactive mockup material exists; never treat the mockup as an application implementation
 - frozen prototype source root/tree hash, planned source-to-destination mapping, production base reference, allowed adaptation strategy, and required promotion-receipt path for every traced reuse
 - whether confirmed project-context facts or canonical terms materially affect implementation; absence of a relevant effect is valid and does not require filler
 

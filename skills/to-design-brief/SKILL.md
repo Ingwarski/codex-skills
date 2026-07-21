@@ -9,7 +9,7 @@ AI is not the source of truth. Source files and explicit user answers are the so
 
 If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
-For aesthetic direction, the assistant may define up to three clearly labeled, source-grounded candidate directions. Do not require the user to select one before the brief or prototype candidates are created. Record shared constraints, candidate differences, and rationale; the final visual direction is established only by the engineer-approved integrated prototype.
+For aesthetic direction, the assistant may define up to three clearly labeled, source-grounded candidate directions. Do not require the user to select one before the brief or Prototype Mockup Candidates are created. Record shared constraints, candidate differences, and rationale; the final visual direction is established only by the engineer-approved integrated mockup.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/design-brief.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.
 
@@ -108,7 +108,7 @@ If audience, product category, platform priorities, existing-system inheritance,
 5. Run the concern scan and decide which concerns deserve sections.
 6. Define a source-backed Design Spine.
 7. Define a source-backed Experience Spine.
-8. Critique the planned Design Spine against generic AI defaults: templated palettes, interchangeable type pairings, decorative filler, and styles that could belong to any product in the category. Name one signature element or one deliberate restraint principle grounded in the product's domain, and state where the design spends or withholds boldness. If the direction is not product-specific, revise it or turn the strongest source-grounded alternatives into clearly labeled prototype candidates for whole-design comparison; do not add a pre-prototype selection gate.
+8. Critique the planned Design Spine against generic AI defaults: templated palettes, interchangeable type pairings, decorative filler, and styles that could belong to any product in the category. Name one signature element or one deliberate restraint principle grounded in the product's domain, and state where the design spends or withholds boldness. If the direction is not product-specific, revise it or turn the strongest source-grounded alternatives into clearly labeled Prototype Mockup Candidates for whole-design comparison; do not add a pre-mockup selection gate. These candidates are design-only interaction simulations, not application implementations.
 9. Define semantic tokens and component appearance principles without overbuilding a design-system monster.
 10. Define responsive, accessibility, state, and interaction expectations.
 11. Add handoff prompts or guidance for Figma, v0, Stitch, or Codex only when useful and only from captured content.

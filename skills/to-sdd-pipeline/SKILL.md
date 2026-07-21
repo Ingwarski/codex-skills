@@ -1,6 +1,6 @@
 ---
 name: to-sdd-pipeline
-description: Orchestrate a design-first SDD pipeline from a rough product description, saved Product Idea Intake, or optional existing docs/product-idea.md through validated product-intent handoff, PRD, the project-context/canonical-terms bundle, the coherent pre-design SDD baseline, exactly three runnable prototype candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
+description: Orchestrate a design-first SDD pipeline from a rough product description, saved Product Idea Intake, or optional existing docs/product-idea.md through validated product-intent handoff, PRD, the project-context/canonical-terms bundle, the coherent pre-design SDD baseline, exactly three interactive prototype mockup candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
 ---
 # to-sdd-pipeline
 
@@ -23,7 +23,7 @@ For the no-file path, dispatch or resume `to-product-idea` and remain at `awaiti
 
 Only the downstream `to-prd` node requires a validated current `docs/product-idea.md`. In DAS Forge it also requires a current `ProductIdeaHandoffReceipt` whose recorded content hash matches that file. These are preconditions for `to-prd`, not prerequisites for starting the Product Creation Run or invoking this orchestrator. In a direct non-DAS invocation, a validated existing file may serve as the handoff source without a runtime receipt, while its source mode and content hash still remain explicit in the manifest.
 
-The artifact-owner skills listed below must be available before their nodes run. A project-supported prototype producer or Product Design adapter is required only before the prototype node runs.
+The artifact-owner skills listed below must be available before their nodes run. A project-supported mockup producer or Product Design adapter is required only before the prototype-mockup node runs.
 
 Read existing SDD artifacts and `forge/sdd-manifest.json` when present. Inspect the codebase for source-backed architecture, design-system, runtime, and verification facts instead of asking for discoverable information.
 
@@ -52,7 +52,7 @@ It must never directly create or edit a domain artifact. Invoke or re-invoke the
 
 An owner invocation may change only its declared artifact path or declared cohesive output set. `to-project-context` is one coupled two-output owner invocation: both files are required, validated and hashed separately, and recorded with the same owner-invocation ID. A missing, stale, or invalid member makes `project-context-bundle` incomplete and re-invokes that owner for the whole bundle. Every artifact still has exactly one owner. The orchestrator validates owner output, records its hash and provenance, then dispatches every newly ready node without asking the user to continue.
 
-The prototype producer is a runtime adapter, not an SDD artifact owner. During Phase 2 it may write candidate-specific code/assets only under `forge/design/candidates/{candidate_id}/{version}/`, optional shared preview infrastructure only under the versioned `forge/design/candidate-sets/{candidate_set_id}/{set_version}/shared/` workspace, and normalized evidence under `forge/design/evidence/`. Shared runtime reuse resolves to that candidate-set version and cannot hide mutable source elsewhere. It must not write production application source directories, domain SDD artifacts, or the orchestration manifest. Every write records adapter, candidate/version or candidate-set version, target hash, and changed paths. Phase 3 implementation agents own production-code writes under the bounds of the approved development plan.
+The mockup producer is a runtime adapter, not an SDD artifact owner. During Phase 2 it may write candidate-specific design code/assets only under `forge/design/candidates/{candidate_id}/{version}/`, optional shared mockup-preview infrastructure only under the versioned `forge/design/candidate-sets/{candidate_set_id}/{set_version}/shared/` workspace, and normalized evidence under `forge/design/evidence/`. Shared preview reuse resolves to that candidate-set version and cannot hide mutable source elsewhere. It must not write production application source directories, production application logic, domain SDD artifacts, or the orchestration manifest. Every write records adapter, candidate/version or candidate-set version, target hash, and changed paths. Phase 3 implementation agents own production-code writes under the bounds of the approved development plan.
 
 ## Dependency Graph
 
@@ -134,9 +134,9 @@ Artifact playback, validation, preview visibility, candidate recommendation, adv
 
 An owner result of `baseline_change_required` is not a question gate. Invalidate the affected design dependents, generate a revised candidate whole from current sources, and pause only at `awaiting-design-approval` for approval of that revised integrated baseline. If the current source already contains an explicit scoped operator correction and acceptance, persist it as an operator override and reconcile the affected baseline scope without asking the operator to approve the same correction again.
 
-## Prototype Candidate Contract
+## Prototype Mockup Candidate Contract
 
-After the coherent pre-design SDD baseline validates, invoke the project-supported prototype producer through its adapter. It must return exactly three meaningfully distinct, whole-product, independently interactive candidates with equivalent required scope.
+After the coherent pre-design SDD baseline validates, invoke the project-supported mockup producer through its adapter. It must return exactly three meaningfully distinct, independently viewable and interaction-simulated Prototype Mockup Candidates with equivalent required design scope. `Whole-product` means coverage of the required product screens, flows, states, representative data, and viewports; it never means that Phase 2 implements the whole application. Candidate interactions are design simulations only and must not implement or claim production backend, auth, persistence, provider calls, repository mutations, Feature Unit execution, integrations, or other application runtime behavior.
 
 For each candidate require:
 - candidate ID and version
@@ -159,7 +159,7 @@ Treat vendor Work Mode, `terminal.local`, Sites, cloud-browser, or in-app-browse
 
 Normalize `VisualQAEvidence` with adapter/environment, candidate or Baseline ID, target reference/hash, canonical preview URL, route/state/viewport/theme/content fixture, source and implementation capture IDs, interactions checked, console result, QA result, findings with severity and release effect, and timestamp. Retain raw provider reports only as attachments.
 
-Treat image-to-code output as a Phase 2 frontend prototype. It does not prove production auth, persistence, backend/API, integrations, security boundaries, or exhaustive edge cases. Production code may reuse it only through the traced promote/diff contract in `docs/development-plan.md`. The Phase 3 runner, not this orchestrator, the planning skill, or implementation-agent prose, owns the resulting `forge/runs/{unit_id}/{run_id}/prototype-promotion.json` receipt derived from the actual Git diff.
+Treat image-to-code output as a Phase 2 interactive frontend mockup preview, not an application implementation. It may simulate product states for design review but does not implement or prove production auth, persistence, backend/API, provider execution, integrations, security boundaries, repository effects, or exhaustive edge cases. Presentation-layer mockup code may optionally seed production work only through the traced promote/diff contract in `docs/development-plan.md`. The Phase 3 runner, not this orchestrator, the planning skill, or implementation-agent prose, owns the resulting `forge/runs/{unit_id}/{run_id}/prototype-promotion.json` receipt derived from the actual Git diff.
 
 For literal URL cloning only, require an authorized `SourceCaptureBundle` before coding. Validate the correct page and reject login/error/blocked/loading/install/promo/redirect captures; record complete small-step desktop scrolling, lazy-loaded and sticky changes, the required mobile viewport, DOM/style/layout evidence, responsive behavior, every visible control and state, and all required images, icons, fonts, videos, SVGs, stylesheets, and other assets. Treat an incomplete bundle as a typed clone blocker. Do not impose exhaustive clone capture on redesign, improvement, or inspiration routes.
 
@@ -241,7 +241,7 @@ Do not store secrets. Use stable IDs and content hashes so resume and invalidati
 7. After each result, validate the owner boundary, source traceability, required structure, open questions, and content hash. Convert a material non-inferable product-intent question into a typed `Input needed` request instead of leaving it in background logs.
 8. Reconcile terminology against `docs/canonical-terms.md` and cross-artifact conflicts by re-invoking owners; never patch their artifacts directly. Record only consumed context/term fragments so unrelated bundle edits do not trigger broad invalidation.
 9. Continue until the coherent pre-design SDD baseline validates.
-10. Produce and verify the three prototype candidates, open their three external-browser pages, then pause once for whole-design selection and approval.
+10. Produce and verify the three Prototype Mockup Candidates, open their three external-browser pages, then pause once for whole-design selection and approval.
 11. Persist the Approved Visual Baseline through its owner, update QA through its owner, and create the development plan through its owner.
 12. Return the pipeline state, evidence, approved Baseline ID, invalidations, and next executable action.
 
@@ -253,7 +253,7 @@ Return:
 - `Manifest`
 - `Product Idea Intake And Handoff`
 - `Validated Artifacts`
-- `Prototype Candidates And Browser Receipts`
+- `Prototype Mockup Candidates And Browser Receipts`
 - `Approved Baseline ID`, when approved
 - `Invalidated Or Regenerated Artifacts`
 - `Blocking Decision Or Authorization`, only when paused
