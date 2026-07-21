@@ -1,6 +1,6 @@
 ---
 name: to-product-idea
-description: Create or update docs/product-idea.md through a visible, resumable, one-question-at-a-time product-intent intake. Use when a DAS Forge project begins from a short idea, the product idea is absent or materially incomplete, an imported product-idea.md needs validation, or an explicit operator decision changes upstream product intent before the SDD pipeline runs or resumes.
+description: Create or update docs/product-idea.md through a visible, resumable, one-question-at-a-time product-intent intake. Use when a DAS Forge project begins from a short idea, the product idea is absent or materially incomplete, an existing or imported product-idea.md needs validation or handoff, or an explicit operator decision changes upstream product intent before the SDD pipeline runs or resumes.
 ---
 # to-product-idea
 
@@ -20,6 +20,13 @@ Accept any combination of:
 - relevant README, CODEX, repository, product, business, or domain evidence;
 - DAS Forge intake state supplied by the `ProductIdeaIntake` runtime adapter.
 
+A pre-existing `docs/product-idea.md` is optional. Support both entry scenarios explicitly:
+
+1. **No existing file:** begin from the operator's short or rough description, ask only unresolved material questions, and create the authoritative file only on the start command.
+2. **Existing or imported file:** treat the selected file as the candidate source, validate it before asking anything, skip the interview when its material intent is coherent, and ask only focused questions for actual material gaps, contradictions, or explicit corrections.
+
+Never require the operator to create a file before invoking this skill. Never discard or replace an existing file during intake; preserve it unchanged unless the final operator-confirmed submission requires a new version.
+
 Inspect discoverable sources instead of asking the operator. Repository evidence may establish current facts but cannot authorize new product scope. Never treat a recommendation, inferred preference, or unconfirmed assumption as operator-confirmed intent.
 
 ## Output And Ownership
@@ -28,7 +35,7 @@ Create or update exactly one human-readable artifact:
 
 - `docs/product-idea.md`
 
-Do not write an incomplete interview draft to the authoritative path. During DAS Forge execution, the `ProductIdeaIntake` runtime adapter owns draft/session persistence under `forge/intake/`; render its current draft in Mission Control and materialize `docs/product-idea.md` atomically only after intent is complete and the operator invokes `Create product idea and start SDD`.
+Do not write an incomplete interview draft to the authoritative path. During DAS Forge execution, the `ProductIdeaIntake` runtime adapter owns draft/session persistence under `forge/intake/`; render its current draft in Mission Control. After intent is complete and the operator invokes `Create product idea and start SDD`, atomically create or version `docs/product-idea.md` only when it is absent or confirmed intent changed; otherwise preserve the validated existing file byte-for-byte.
 
 The runtime adapter, not this artifact owner, owns:
 
@@ -99,12 +106,14 @@ Before writing the artifact, validate that:
 
 Present the complete draft in Mission Control. The operator action `Create product idea and start SDD` submits the intent and starts automation; it is not an approval gate. On that command:
 
-1. write `docs/product-idea.md` atomically;
-2. validate the final file and compute its content hash;
+1. atomically create or version `docs/product-idea.md` when it is absent or confirmed intent changed; otherwise preserve the validated existing file byte-for-byte;
+2. validate that final file and compute its content hash;
 3. return the hash, source mode, intake/session ID, answered decision IDs, assumptions, unresolved non-blocking questions, and submission timestamp to the runtime;
 4. let the runtime write `forge/intake/product-idea-handoff.json` and dispatch `to-sdd-pipeline` automatically.
 
-An existing imported product idea may use the same handoff after validation and any required focused questions. Do not force a full interview when the artifact already contains coherent material intent.
+Use `source_mode: existing-file` for a repository-existing file, `source_mode: imported` for an externally supplied file, and `seed` or `interview` for a no-file path as applicable.
+
+An existing or imported product idea may use the same handoff after validation and any required focused questions. Do not force a full interview when the artifact already contains coherent material intent.
 
 ## Change And Resume Rules
 

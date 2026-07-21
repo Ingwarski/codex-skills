@@ -1,6 +1,6 @@
 ---
 name: to-sdd-pipeline
-description: Orchestrate a design-first SDD pipeline from a validated foreground Product Idea Intake handoff or existing docs/product-idea.md through PRD, the project-context/canonical-terms bundle, the coherent pre-design SDD baseline, exactly three runnable prototype candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
+description: Orchestrate a design-first SDD pipeline from a rough product description, saved Product Idea Intake, or optional existing docs/product-idea.md through validated product-intent handoff, PRD, the project-context/canonical-terms bundle, the coherent pre-design SDD baseline, exactly three runnable prototype candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
 ---
 # to-sdd-pipeline
 
@@ -10,14 +10,20 @@ Run the SDD workflow as one autonomous dependency graph while preserving exclusi
 
 Treat Product Idea Intake as the visible Phase 0 immediately upstream of this graph. Never silently invent or generate missing product intent. When `docs/product-idea.md` is absent or materially incomplete, dispatch or resume `to-product-idea` through the DAS Forge foreground intake adapter and return `awaiting-product-idea-intake`; do not continue into PRD generation.
 
-## Input
+## Entry Inputs And Node Prerequisites
 
-Require:
-- `docs/product-idea.md`
-- the artifact-owner skills listed below
-- a project-supported prototype producer or Product Design adapter before the prototype node runs
+A pre-existing `docs/product-idea.md` is optional and must never be an onboarding or pipeline-entry prerequisite. Accept any of these entry sources:
 
-In DAS Forge, also require a current `ProductIdeaHandoffReceipt` whose recorded content hash matches `docs/product-idea.md`. A manually authored or imported idea becomes eligible through the same visible `Create product idea and start SDD` command after validation; do not force a new interview when its intent is already coherent. In a direct non-DAS invocation, a validated existing file may serve as the handoff source and must be recorded as `source_mode: existing-file` in the manifest.
+- a short or rough product description, with no product-idea file yet;
+- an imported or repository-existing `docs/product-idea.md` selected by the operator;
+- saved Product Idea Intake state or a current validated handoff;
+- any compatible combination of those sources plus explicit operator corrections.
+
+For the no-file path, dispatch or resume `to-product-idea` and remain at `awaiting-product-idea-intake` until the foreground intake materializes the file. For the existing-file path, validate the selected file as candidate product intent: if it is coherent and complete, create the handoff without a redundant full interview; if it has a material gap or contradiction, preserve it as the starting source and ask only the focused questions needed to resolve that gap. Record a repository-existing file as `source_mode: existing-file` and an externally supplied file as `source_mode: imported`.
+
+Only the downstream `to-prd` node requires a validated current `docs/product-idea.md`. In DAS Forge it also requires a current `ProductIdeaHandoffReceipt` whose recorded content hash matches that file. These are preconditions for `to-prd`, not prerequisites for starting the Product Creation Run or invoking this orchestrator. In a direct non-DAS invocation, a validated existing file may serve as the handoff source without a runtime receipt, while its source mode and content hash still remain explicit in the manifest.
+
+The artifact-owner skills listed below must be available before their nodes run. A project-supported prototype producer or Product Design adapter is required only before the prototype node runs.
 
 Read existing SDD artifacts and `forge/sdd-manifest.json` when present. Inspect the codebase for source-backed architecture, design-system, runtime, and verification facts instead of asking for discoverable information.
 
@@ -30,7 +36,7 @@ It must never directly create or edit a domain artifact. Invoke or re-invoke the
 
 | Artifact | Owner |
 |---|---|
-| `docs/product-idea.md` | `to-product-idea` (foreground Phase 0; only invoked when missing, incomplete, imported for intake, or changed by an explicit upstream decision) |
+| `docs/product-idea.md` | `to-product-idea` (foreground Phase 0; invoked for no-file intake, incomplete intent, imported or existing-file validation/handoff, missing or stale handoff, or an explicit upstream change) |
 | `docs/prd.md` | `to-prd` |
 | `docs/project-context.md` | `to-project-context` |
 | `docs/canonical-terms.md` | `to-project-context` |
@@ -91,7 +97,7 @@ Use `to-product-idea` as the sole owner of `docs/product-idea.md`. The DAS Forge
 - restore the current question, answers, draft version, assumptions, and decision branch after restart;
 - resume automatically after each answer without a separate continuation command;
 - never convert a timeout, silence, recommendation, or non-response into consent for material product intent;
-- materialize and hash `docs/product-idea.md` only after the operator invokes `Create product idea and start SDD`;
+- after `Create product idea and start SDD`, atomically create or version `docs/product-idea.md` only when absent or confirmed intent changed, otherwise preserve the validated existing file byte-for-byte, then hash the final file;
 - write `forge/intake/product-idea-handoff.json` with at least intake/session ID, source mode, artifact path, content hash, answered decision IDs, assumptions, unresolved non-blocking questions, submission event, and timestamp.
 
 `Create product idea and start SDD` is the initial execution command, not an approval receipt. Draft playback, answering questions, editing prior answers, resuming intake, and submitting intent do not add approval gates. The only normal product-creation approval remains approval of the complete integrated design baseline.
@@ -227,7 +233,7 @@ Do not store secrets. Use stable IDs and content hashes so resume and invalidati
 ## Workflow
 
 1. Load or initialize the manifest from actual files; never trust stale manifest state over filesystem evidence.
-2. If `docs/product-idea.md` or its DAS Forge handoff is missing, stale, or materially incomplete, set `awaiting-product-idea-intake`, dispatch or resume `to-product-idea` through the foreground adapter, persist the typed request, and return control without launching downstream owners.
+2. Resolve the optional entry source. With no pre-existing `docs/product-idea.md`, set `awaiting-product-idea-intake`, dispatch or resume `to-product-idea` from the rough description or saved intake, persist any typed request, and return control without launching downstream owners. With an existing/imported file, validate it first; hand it off without redundant questions when coherent, or dispatch only the focused material questions needed when incomplete, stale, contradictory, or explicitly corrected.
 3. When `Create product idea and start SDD` supplies a valid matching handoff receipt, clear the intake pause and continue automatically. Do not request another confirmation.
 4. When resuming from a later product-scope answer, design-approval receipt, or risk-authorization receipt, validate and persist the response, clear `pause_reason`, recompute hashes and ready nodes, and continue automatically in the same pipeline run. Do not require a separate resume confirmation.
 5. Validate `docs/product-idea.md` and its current handoff hash, dispatch `to-prd` if required, then invoke `to-project-context` once for the two-file bundle. Validate both members separately, verify their shared owner-invocation ID and current source hashes, and do not make `guardrails` ready until both pass.

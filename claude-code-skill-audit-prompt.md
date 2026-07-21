@@ -28,6 +28,7 @@ Read these files completely:
 1. This is an SDD pipeline, not TDD.
 2. The intended chain is:
    `rough description or existing idea -> visible to-product-idea intake -> product-idea handoff -> to-prd -> to-project-context (project-context.md + canonical-terms.md) -> to-guardrails -> to-user-journey -> to-screen-map -> to-wireframes -> to-design-brief -> to-architecture -> to-dod-evals -> to-qa-checklist -> three prototypes -> one design approval -> to-development-plan`
+   A pre-existing `docs/product-idea.md` is optional, never a pipeline-entry prerequisite. Audit both required entry scenarios: no file plus a rough description, and an existing/imported file selected for validation.
 3. Every artifact must have exactly one owner, and each owner invocation must stay inside its declared output boundary. `to-project-context` is the explicit cohesive two-file output bundle; its two members must be validated and hashed separately under one invocation.
 4. Output files must be strictly separated by responsibility and must not duplicate or contradict one another.
 5. AI is not the source of truth. Source files and explicit user answers are the source of truth. `to-product-idea` may interview and recommend but must never invent or silently default the product mandate.
@@ -62,7 +63,7 @@ Use these boundaries as the user's intended contract.
 
 Owns the current operator-confirmed product mandate, including positioning, target user/problem, desired outcome, core workflow, V1 scope/exclusions, product principles/authority boundaries, success outcomes, assumptions, and open questions. `to-product-idea` is its sole owner.
 
-The skill must use a foreground, resumable Product Idea Intake when the artifact is missing or materially incomplete: one adaptive material question at a time, recommended answer and rationale, live draft/coverage, explicit answer persistence, and atomic final write/hash/handoff after `Create product idea and start SDD`. That action is an execution command, not an approval. Runtime dialogue/draft state and `ProductIdeaHandoffReceipt` are operational provenance under `forge/intake/`, not additional product-truth artifacts.
+The skill must support two explicit entry scenarios. When no file exists, it must start from a rough description and use a foreground, resumable Product Idea Intake: one adaptive material question at a time, recommended answer and rationale, live draft/coverage, explicit answer persistence, and atomic final write/hash/handoff after `Create product idea and start SDD`. When an existing/imported file is selected, it must validate that file first, skip redundant questions if it is coherent, and ask only focused questions for material gaps or corrections. The file is optional at entry. The start action is an execution command, not an approval. Runtime dialogue/draft state and `ProductIdeaHandoffReceipt` are operational provenance under `forge/intake/`, not additional product-truth artifacts.
 
 Must not own architecture, visual design, detailed journeys/screens/wireframes, DoD/eval gates, QA checks, implementation units, or unattended AI-selected product intent.
 
@@ -467,8 +468,8 @@ If none of these candidate skills can be found as actual readable `SKILL.md` fil
    - what exact change should be made.
 10. Pay special attention to `to-design-brief`: it must be strong enough to guide high-quality UX/UI design, not just produce a generic design brief.
 11. Pay special attention to `to-guardrails`: it must prevent AI from inventing scope, silently ignoring missing sources, or claiming completion without evidence.
-12. Pay special attention to `to-product-idea`: it must make missing intent visible to the operator, ask one material question at a time, persist/recover the session, never treat a recommendation as consent, write only the final authoritative artifact, and hand off automatically without creating an approval gate.
-13. Pay special attention to whether `to-sdd-pipeline` routes absent or later-invalidated product intent back through `to-product-idea` and invalidates only transitive dependents.
+12. Pay special attention to `to-product-idea`: it must make missing intent visible to the operator, ask one material question at a time, persist/recover the session, never treat a recommendation as consent, write only the final authoritative artifact, preserve an unchanged coherent existing file byte-for-byte, and hand off automatically without creating an approval gate.
+13. Pay special attention to whether `to-sdd-pipeline` treats a pre-existing `docs/product-idea.md` as optional at entry and required only as validated input before `to-prd`; routes no-file, missing/stale-handoff, incomplete, or later-invalidated intent through `to-product-idea`; validates both the no-file and coherent-existing-file paths; and invalidates only transitive dependents.
 14. Pay special attention to duplicated ownership between artifacts.
 15. Pay special attention to whether the current skills say "source-backed" but still allow vague output.
 

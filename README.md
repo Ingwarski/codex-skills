@@ -9,7 +9,7 @@ The skills are designed for **SDD - Specification Driven Development**. They are
 Use `to-product-idea` as the visible Phase 0 owner when the product idea is absent, incomplete, imported for validation, or materially changed. After its handoff, `to-sdd-pipeline` is the autonomous downstream entrypoint. Together they dispatch this acyclic graph:
 
 ```text
-rough-description-or-imported-idea -> to-product-idea -> product-idea handoff
+rough-description-or-existing-or-imported-idea -> to-product-idea -> product-idea handoff
 -> to-prd
 -> to-project-context (project-context.md + canonical-terms.md)
 -> to-guardrails
@@ -26,7 +26,7 @@ rough-description-or-imported-idea -> to-product-idea -> product-idea handoff
 -> to-development-plan
 ```
 
-`to-product-idea` solely owns `docs/product-idea.md` and uses a foreground, resumable, one-question-at-a-time intake. `Create product idea and start SDD` atomically materializes the file and its handoff receipt; it is an execution command, not an approval. `to-prd` is the first SDD domain-artifact owner dispatched by `to-sdd-pipeline` after that handoff. `to-project-context` runs immediately after the PRD and both bundle members must validate before later owners run. `docs/wireframes.md` never depends on the later design brief, and the development plan is deliberately post-approval because it consumes the Approved Visual Baseline.
+`to-product-idea` solely owns `docs/product-idea.md` and uses a foreground, resumable, one-question-at-a-time intake. `Create product idea and start SDD` atomically creates or versions the file only when needed, preserves an unchanged existing file byte-for-byte, and records its handoff receipt; it is an execution command, not an approval. `to-prd` is the first SDD domain-artifact owner dispatched by `to-sdd-pipeline` after that handoff. `to-project-context` runs immediately after the PRD and both bundle members must validate before later owners run. `docs/wireframes.md` never depends on the later design brief, and the development plan is deliberately post-approval because it consumes the Approved Visual Baseline.
 
 ## Included Skills
 
@@ -118,6 +118,8 @@ a rough product description
 or a trusted existing docs/product-idea.md
 ```
 
+A pre-existing `docs/product-idea.md` is optional, not an onboarding prerequisite. With no file, the visible intake creates it from the rough description and explicit answers. With an existing file, the intake validates it first, skips redundant questions when it is coherent, and asks only about material gaps or corrections before handoff.
+
 Useful optional initial repository evidence:
 
 ```text
@@ -126,13 +128,13 @@ README.md
 
 The full pipeline always creates the compact `docs/project-context.md` plus `docs/canonical-terms.md` bundle immediately after the PRD so later owners resolve context and vocabulary once. They consume only relevant confirmed sections or terms; descriptive or unrelated content is not copied merely to satisfy ceremony. Beyond this standard bundle, the orchestrator creates the smallest coherent set required by the product.
 
-When the idea is absent, incomplete, or needs material reconciliation, start the visible intake:
+When the idea is absent, incomplete, or needs material reconciliation, start the visible intake; do not create a placeholder file first:
 
 ```text
 Use to-product-idea for this project.
 ```
 
-The intake asks one material question at a time with a recommendation and rationale, keeps a live draft and coverage visible, persists resume state, and writes the authoritative file only after `Create product idea and start SDD`. In DAS Forge, that command launches the downstream pipeline automatically. With an already validated current idea, ask Codex to run the orchestration skill directly:
+The intake asks one material question at a time with a recommendation and rationale, keeps a live draft and coverage visible, persists resume state, and writes the authoritative file only after `Create product idea and start SDD`. In DAS Forge, that command launches the downstream pipeline automatically. If an existing file has no current matching handoff, direct orchestration routes it through visible validation, skips redundant questions when coherent, creates the matching handoff, and continues automatically. With an already validated current idea and matching handoff/hash, ask Codex to run the orchestration skill directly:
 
 ```text
 Use to-sdd-pipeline for this project.
