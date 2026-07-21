@@ -1,15 +1,16 @@
 # Codex SDD Skills
 
-This repository contains a design-first Codex SDD pipeline for moving from a basic product idea through a coherent pre-design specification, exactly three runnable prototype candidates, one whole-design approval, and implementation planning for a production frontend and backend.
+This repository contains a design-first Codex SDD pipeline for moving from a rough product description or trusted existing idea through a visible Product Idea Intake, a coherent pre-design specification, exactly three runnable prototype candidates, one whole-design approval, and implementation planning for a production frontend and backend.
 
 The skills are designed for **SDD - Specification Driven Development**. They are not a TDD workflow and they are not generic prompt templates. Every domain artifact has exactly one owner, and every owner invocation is confined to its declared output boundary. Most owners create one artifact; `to-project-context` is the explicit cohesive two-file bundle owner. `to-sdd-pipeline` owns only the machine-readable orchestration manifest and invokes or re-invokes artifact owners autonomously.
 
 ## Skill Chain
 
-Use `to-sdd-pipeline` as the autonomous entrypoint. It dispatches this acyclic graph:
+Use `to-product-idea` as the visible Phase 0 owner when the product idea is absent, incomplete, imported for validation, or materially changed. After its handoff, `to-sdd-pipeline` is the autonomous downstream entrypoint. Together they dispatch this acyclic graph:
 
 ```text
-product-idea -> to-prd
+rough-description-or-imported-idea -> to-product-idea -> product-idea handoff
+-> to-prd
 -> to-project-context (project-context.md + canonical-terms.md)
 -> to-guardrails
 -> to-user-journey
@@ -25,12 +26,13 @@ product-idea -> to-prd
 -> to-development-plan
 ```
 
-`to-prd` is the first domain-artifact owner dispatched by `to-sdd-pipeline` after `docs/product-idea.md` exists. `to-project-context` runs immediately after the PRD and both bundle members must validate before later owners run. `docs/wireframes.md` never depends on the later design brief, and the development plan is deliberately post-approval because it consumes the Approved Visual Baseline.
+`to-product-idea` solely owns `docs/product-idea.md` and uses a foreground, resumable, one-question-at-a-time intake. `Create product idea and start SDD` atomically materializes the file and its handoff receipt; it is an execution command, not an approval. `to-prd` is the first SDD domain-artifact owner dispatched by `to-sdd-pipeline` after that handoff. `to-project-context` runs immediately after the PRD and both bundle members must validate before later owners run. `docs/wireframes.md` never depends on the later design brief, and the development plan is deliberately post-approval because it consumes the Approved Visual Baseline.
 
 ## Included Skills
 
 | Skill | Output | Purpose |
 |---|---|---|
+| `to-product-idea` | `docs/product-idea.md` | Runs the visible Product Idea Intake, asks only material non-inferable questions one at a time, and atomically creates or versions the operator-confirmed upstream product mandate. |
 | `to-sdd-pipeline` | `forge/sdd-manifest.json` | Dispatches artifact owners, tracks dependencies and hashes, runs prototype comparison, resumes after the one approval, and propagates invalidation without editing domain artifacts directly. |
 | `to-prd` | `docs/prd.md` | Converts the product idea and current project evidence into the first file-based domain artifact without issue-tracker side effects. |
 | `to-project-context` | `docs/project-context.md` and `docs/canonical-terms.md` | Creates the atomic context/vocabulary bundle after PRD validation; the two outputs are validated and hashed separately under one owner invocation. |
@@ -49,6 +51,8 @@ product-idea -> to-prd
 All skills follow the same operating contract:
 
 - AI is not the source of truth. Source files and explicit user answers are.
+- Missing product intent is surfaced through the foreground Product Idea Intake, never silently generated in background logs. Material questions persist as `Input needed`; silence, timeout, and recommendations are not consent.
+- Intake answers and `Create product idea and start SDD` are input/start actions, not approval receipts. The only normal approval is still approval of the complete integrated prototype.
 - Discoverable information must be read from sources or code instead of asked. A focused grill-me gap-check runs only for genuinely non-inferable information that materially changes product scope, the whole-design baseline, or a high-risk boundary.
 - Non-material gaps use the smallest reversible source-grounded default, are recorded, and do not become approval gates.
 - An owner invocation creates only its declared final output path or cohesive output set. No draft output files.
@@ -64,6 +68,7 @@ All skills follow the same operating contract:
 
 The documents are intentionally separated:
 
+- `product-idea.md` owns the current operator-confirmed product mandate. `to-product-idea` is its sole owner; runtime draft/session data and `ProductIdeaHandoffReceipt` remain operational provenance under `forge/intake/`.
 - `project-context.md` owns confirmed product context, users, platforms, boundaries, constraints, assumptions, risks, and open questions derived after PRD work.
 - `canonical-terms.md` owns normalized downstream vocabulary and aliases without redefining PRD behavior or established technical identifiers.
 - `user-journey.md` owns user behavior and journey logic.
@@ -88,6 +93,7 @@ Recommended local install with symlinks:
 ```bash
 mkdir -p ~/.codex/skills
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-sdd-pipeline" ~/.codex/skills/to-sdd-pipeline
+ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-product-idea" ~/.codex/skills/to-product-idea
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-prd" ~/.codex/skills/to-prd
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-project-context" ~/.codex/skills/to-project-context
 ln -s "/Users/ingwar/Documents/Codex Skills/skills/to-user-journey" ~/.codex/skills/to-user-journey
@@ -105,10 +111,11 @@ If a symlink already exists, remove or update only that symlink. Do not overwrit
 
 ## How To Use
 
-Start in a product project that has at least:
+Start with either:
 
 ```text
-docs/product-idea.md
+a rough product description
+or a trusted existing docs/product-idea.md
 ```
 
 Useful optional initial repository evidence:
@@ -119,13 +126,19 @@ README.md
 
 The full pipeline always creates the compact `docs/project-context.md` plus `docs/canonical-terms.md` bundle immediately after the PRD so later owners resolve context and vocabulary once. They consume only relevant confirmed sections or terms; descriptive or unrelated content is not copied merely to satisfy ceremony. Beyond this standard bundle, the orchestrator creates the smallest coherent set required by the product.
 
-Ask Codex to run the orchestration skill:
+When the idea is absent, incomplete, or needs material reconciliation, start the visible intake:
+
+```text
+Use to-product-idea for this project.
+```
+
+The intake asks one material question at a time with a recommendation and rationale, keeps a live draft and coverage visible, persists resume state, and writes the authoritative file only after `Create product idea and start SDD`. In DAS Forge, that command launches the downstream pipeline automatically. With an already validated current idea, ask Codex to run the orchestration skill directly:
 
 ```text
 Use to-sdd-pipeline for this project.
 ```
 
-The orchestrator dispatches every ready artifact owner without asking the user to continue. It pauses only for a material product-scope decision, the one whole-design approval, or a just-in-time high-risk authorization. `to-guardrails` runs after the PRD and is regenerated only when a named upstream change invalidates one of its rules; the mere appearance of later UX files is not a rerun trigger.
+The orchestrator dispatches every ready artifact owner without asking the user to continue. A later material product-intent gap returns to the same Intake surface, versions the idea through its owner, and invalidates only transitive dependents. It otherwise pauses only for the one whole-design approval or a just-in-time high-risk authorization. `to-guardrails` runs after the PRD and is regenerated only when a named upstream change invalidates one of its rules; the mere appearance of later UX files is not a rerun trigger.
 
 Individual owner skills remain callable for targeted artifact work. In that mode the caller is responsible for their documented prerequisites and invalidation. Artifact readiness means validated/current, not separately human-approved.
 
@@ -133,11 +146,12 @@ Individual owner skills remain callable for targeted artifact work. In that mode
 
 The skills should not invent missing product decisions.
 
-When a genuinely material, non-inferable gap exists, the skill should stop before writing the output file and ask focused questions. The question style follows a grill-me pattern:
+When a genuinely material, non-inferable product-intent gap exists, `to-product-idea` or the orchestrator returns one structured question to the visible Product Idea Intake surface. The affected Product Creation Run enters `Input needed` and resumes automatically after the answer. The question style follows a grill-me pattern:
 
 - ask one question at a time when the answer affects the next question;
 - include a recommended answer;
 - inspect source files or the codebase instead of asking when the answer can be found there;
+- never use timeout, silence, or an unconfirmed recommendation as a material answer;
 - continue only after the material missing decision is resolved.
 
 If the gap is not blocking, the skill should use the smallest reversible source-grounded choice, write the artifact, trace the choice, and list any residual uncertainty in `Open Questions`.
@@ -206,6 +220,8 @@ These references are authoring provenance, not product source files. During a pr
 
 ```text
 skills/
+  to-product-idea/
+    SKILL.md
   to-sdd-pipeline/
     SKILL.md
   to-prd/

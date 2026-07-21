@@ -9,6 +9,7 @@ Workspace:
 
 Read these files completely:
 
+- `skills/to-product-idea/SKILL.md`
 - `skills/to-sdd-pipeline/SKILL.md`
 - `skills/to-prd/SKILL.md`
 - `skills/to-project-context/SKILL.md`
@@ -26,11 +27,11 @@ Read these files completely:
 
 1. This is an SDD pipeline, not TDD.
 2. The intended chain is:
-   `to-prd -> to-project-context (project-context.md + canonical-terms.md) -> to-guardrails -> to-user-journey -> to-screen-map -> to-wireframes -> to-design-brief -> to-architecture -> to-dod-evals -> to-qa-checklist -> three prototypes -> one design approval -> to-development-plan`
+   `rough description or existing idea -> visible to-product-idea intake -> product-idea handoff -> to-prd -> to-project-context (project-context.md + canonical-terms.md) -> to-guardrails -> to-user-journey -> to-screen-map -> to-wireframes -> to-design-brief -> to-architecture -> to-dod-evals -> to-qa-checklist -> three prototypes -> one design approval -> to-development-plan`
 3. Every artifact must have exactly one owner, and each owner invocation must stay inside its declared output boundary. `to-project-context` is the explicit cohesive two-file output bundle; its two members must be validated and hashed separately under one invocation.
 4. Output files must be strictly separated by responsibility and must not duplicate or contradict one another.
-5. AI is not the source of truth. Source files and explicit user answers are the source of truth.
-6. If required information is missing from source files, the skill must use a grill-me style gap-check before producing the output file.
+5. AI is not the source of truth. Source files and explicit user answers are the source of truth. `to-product-idea` may interview and recommend but must never invent or silently default the product mandate.
+6. If required product intent is missing, Product Idea Intake must surface one visible material question at a time with a recommendation and rationale, persist it as `Input needed`, and wait for an explicit answer. Questions may not exist only in logs or resolve by timeout.
 7. No draft output files. The skill should either create the final artifact or ask questions first.
 8. No hidden assumptions. `project-context.md` may retain clearly labeled contextual assumptions in its dedicated `Assumptions` section; unresolved decisions go to `Open Questions`, and no assumption may become silent product truth.
 9. The goal is not document proliferation. The goal is to reliably move from PRD to high-quality UX/UI design and then implementation planning.
@@ -39,6 +40,7 @@ Read these files completely:
 
 ## Expected Output Artifacts In The Pipeline
 
+- `docs/product-idea.md`
 - `docs/prd.md`
 - `docs/project-context.md`
 - `docs/canonical-terms.md`
@@ -55,6 +57,14 @@ Read these files completely:
 ## Artifact Responsibility Boundaries
 
 Use these boundaries as the user's intended contract.
+
+### `docs/product-idea.md`
+
+Owns the current operator-confirmed product mandate, including positioning, target user/problem, desired outcome, core workflow, V1 scope/exclusions, product principles/authority boundaries, success outcomes, assumptions, and open questions. `to-product-idea` is its sole owner.
+
+The skill must use a foreground, resumable Product Idea Intake when the artifact is missing or materially incomplete: one adaptive material question at a time, recommended answer and rationale, live draft/coverage, explicit answer persistence, and atomic final write/hash/handoff after `Create product idea and start SDD`. That action is an execution command, not an approval. Runtime dialogue/draft state and `ProductIdeaHandoffReceipt` are operational provenance under `forge/intake/`, not additional product-truth artifacts.
+
+Must not own architecture, visual design, detailed journeys/screens/wireframes, DoD/eval gates, QA checks, implementation units, or unattended AI-selected product intent.
 
 ### `docs/project-context.md`
 
@@ -320,6 +330,7 @@ If any file or URL is unavailable, say that explicitly. Do not pretend it was in
 Core behavior, source-of-truth, gap-check:
 
 - `/Users/ingwar/.codex/skills/grill-me/SKILL.md`
+- `/Users/ingwar/Documents/Codex Skills/skills/to-product-idea/SKILL.md`
 - `/Users/ingwar/.codex/skills/to-prd/SKILL.md`
 - `/Users/ingwar/.codex/skills/.system/skill-creator/SKILL.md`
 - `/Users/ingwar/.codex/plugins/cache/openai-curated/superpowers/d6169bef/skills/writing-skills/SKILL.md`
@@ -430,7 +441,7 @@ If none of these candidate skills can be found as actual readable `SKILL.md` fil
 
 ## Audit Process
 
-1. Read all 7 created skills completely.
+1. Read all 13 created skills completely.
 2. Read the listed local external/proven skills completely.
 3. Fetch and read the BMAD UX Coach references if network access is available.
 4. Search for the other named public/external skills.
@@ -446,6 +457,7 @@ If none of these candidate skills can be found as actual readable `SKILL.md` fil
    - avoidance of TDD-first thinking;
    - avoidance of hidden assumptions;
    - final artifact only, no draft output.
+   - visible foreground intake, durable resume, typed `Input needed`, no material timeout/default, exact product-idea hash/handoff, and no extra approval receipt.
 7. Identify weak, shallow, duplicated, contradictory, overbuilt, or missing parts.
 8. Do not praise vaguely. Give concrete findings with file and line references.
 9. For every finding, explain:
@@ -455,8 +467,10 @@ If none of these candidate skills can be found as actual readable `SKILL.md` fil
    - what exact change should be made.
 10. Pay special attention to `to-design-brief`: it must be strong enough to guide high-quality UX/UI design, not just produce a generic design brief.
 11. Pay special attention to `to-guardrails`: it must prevent AI from inventing scope, silently ignoring missing sources, or claiming completion without evidence.
-12. Pay special attention to duplicated ownership between artifacts.
-13. Pay special attention to whether the current skills say "source-backed" but still allow vague output.
+12. Pay special attention to `to-product-idea`: it must make missing intent visible to the operator, ask one material question at a time, persist/recover the session, never treat a recommendation as consent, write only the final authoritative artifact, and hand off automatically without creating an approval gate.
+13. Pay special attention to whether `to-sdd-pipeline` routes absent or later-invalidated product intent back through `to-product-idea` and invalidates only transitive dependents.
+14. Pay special attention to duplicated ownership between artifacts.
+15. Pay special attention to whether the current skills say "source-backed" but still allow vague output.
 
 ## Required Report
 

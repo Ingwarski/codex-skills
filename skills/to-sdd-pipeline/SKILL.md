@@ -1,6 +1,6 @@
 ---
 name: to-sdd-pipeline
-description: Orchestrate a design-first SDD pipeline from docs/product-idea.md through PRD, the project-context/canonical-terms bundle, the coherent pre-design SDD baseline, exactly three runnable prototype candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
+description: Orchestrate a design-first SDD pipeline from a validated foreground Product Idea Intake handoff or existing docs/product-idea.md through PRD, the project-context/canonical-terms bundle, the coherent pre-design SDD baseline, exactly three runnable prototype candidates, one whole-design approval, post-approval reconciliation, and docs/development-plan.md. Use when the user wants the full SDD set generated or reconciled autonomously rather than invoking one artifact skill at a time.
 ---
 # to-sdd-pipeline
 
@@ -8,12 +8,16 @@ description: Orchestrate a design-first SDD pipeline from docs/product-idea.md t
 
 Run the SDD workflow as one autonomous dependency graph while preserving exclusive artifact ownership. The process exists to reduce an engineer's coordination work. Do not add file-by-file, screen-by-screen, or step-by-step approval gates.
 
+Treat Product Idea Intake as the visible Phase 0 immediately upstream of this graph. Never silently invent or generate missing product intent. When `docs/product-idea.md` is absent or materially incomplete, dispatch or resume `to-product-idea` through the DAS Forge foreground intake adapter and return `awaiting-product-idea-intake`; do not continue into PRD generation.
+
 ## Input
 
 Require:
 - `docs/product-idea.md`
 - the artifact-owner skills listed below
 - a project-supported prototype producer or Product Design adapter before the prototype node runs
+
+In DAS Forge, also require a current `ProductIdeaHandoffReceipt` whose recorded content hash matches `docs/product-idea.md`. A manually authored or imported idea becomes eligible through the same visible `Create product idea and start SDD` command after validation; do not force a new interview when its intent is already coherent. In a direct non-DAS invocation, a validated existing file may serve as the handoff source and must be recorded as `source_mode: existing-file` in the manifest.
 
 Read existing SDD artifacts and `forge/sdd-manifest.json` when present. Inspect the codebase for source-backed architecture, design-system, runtime, and verification facts instead of asking for discoverable information.
 
@@ -26,6 +30,7 @@ It must never directly create or edit a domain artifact. Invoke or re-invoke the
 
 | Artifact | Owner |
 |---|---|
+| `docs/product-idea.md` | `to-product-idea` (foreground Phase 0; only invoked when missing, incomplete, imported for intake, or changed by an explicit upstream decision) |
 | `docs/prd.md` | `to-prd` |
 | `docs/project-context.md` | `to-project-context` |
 | `docs/canonical-terms.md` | `to-project-context` |
@@ -48,7 +53,8 @@ The prototype producer is a runtime adapter, not an SDD artifact owner. During P
 Use this acyclic graph:
 
 ```text
-product-idea
+product-idea-intake
+-> product-idea
 -> prd
 -> project-context-bundle
    |- project-context
@@ -73,6 +79,25 @@ In pipeline mode, `to-project-context` reads only the product idea, PRD, explici
 
 Run independent ready nodes in parallel when their owner skills and workspace safety allow it. Serialize nodes that share a source file being updated.
 
+## Product Idea Intake Handoff Contract
+
+Product Idea Intake is a Product Creation Run, not a Feature Unit. It must appear in Mission Control as a dedicated foreground workspace with one current question, its recommended answer and rationale, custom-answer controls, live draft preview, and decision coverage. A question may never exist only in terminal output or a hidden agent log.
+
+Use `to-product-idea` as the sole owner of `docs/product-idea.md`. The DAS Forge `ProductIdeaIntake` runtime adapter owns durable session/draft state and the handoff receipt under `forge/intake/`. It must:
+
+- emit and persist one typed `ProductIntentQuestion` at a time;
+- project an unanswered material question as `Input needed`, not `Blocked` or an approval;
+- route the operator's external default browser to the exact pending intake request when the intake surface is not active;
+- restore the current question, answers, draft version, assumptions, and decision branch after restart;
+- resume automatically after each answer without a separate continuation command;
+- never convert a timeout, silence, recommendation, or non-response into consent for material product intent;
+- materialize and hash `docs/product-idea.md` only after the operator invokes `Create product idea and start SDD`;
+- write `forge/intake/product-idea-handoff.json` with at least intake/session ID, source mode, artifact path, content hash, answered decision IDs, assumptions, unresolved non-blocking questions, submission event, and timestamp.
+
+`Create product idea and start SDD` is the initial execution command, not an approval receipt. Draft playback, answering questions, editing prior answers, resuming intake, and submitting intent do not add approval gates. The only normal product-creation approval remains approval of the complete integrated design baseline.
+
+If a downstream owner discovers missing material product intent, suspend only the affected dependency branch, route one scoped question through the same intake UI, persist the answer, re-invoke `to-product-idea`, and invalidate only transitive dependents of the changed idea hash. Unrelated safe work may continue when ownership and dependencies remain unambiguous.
+
 ## Project Context Bundle Contract
 
 Immediately after `docs/prd.md` validates, invoke `to-project-context` once to produce:
@@ -95,7 +120,7 @@ For each downstream artifact, record only the exact context sections or canonica
 Resolve non-material uncertainty from source files, codebase evidence, or the smallest reversible source-grounded default. Record the decision and continue.
 
 Pause only for:
-1. a genuinely non-inferable decision that materially changes product scope;
+1. Product Idea Intake or a later genuinely non-inferable decision that materially changes product scope, surfaced through a foreground `Input needed` request;
 2. the engineer's one approval of the complete integrated prototype, which also selects the candidate and creates the Approved Visual Baseline;
 3. just-in-time authorization before an irreversible, destructive, financial, legal, public, privileged, security-sensitive, privacy-sensitive, or external side effect.
 
@@ -151,14 +176,22 @@ Store `project-context` and `canonical-terms` as two separate entries in `artifa
 {
   "pipeline_version": "string",
   "state": "string",
+  "product_idea_intake": {
+    "status": "not_started|awaiting_answer|ready_to_submit|handed_off|superseded",
+    "intake_id": "string|null",
+    "source_mode": "seed|interview|imported|existing-file|null",
+    "handoff_receipt_path": "string|null",
+    "product_idea_hash": "string|null",
+    "current_request_id": "string|null"
+  },
   "artifacts": {
     "artifact_id": {
       "path": "string",
       "owner_skill": "string",
       "owner_invocation_id": "string|null",
       "declared_output_set": [],
-      "status": "missing|ready|running|validated|invalidated|blocked",
-      "mission_control_status": "Pending|Running|Ready|Needs attention|Approved design|Blocked|Done",
+      "status": "missing|input_needed|ready|running|validated|invalidated|blocked",
+      "mission_control_status": "Pending|Input needed|Running|Ready|Needs attention|Approved design|Blocked|Done",
       "source_version": "string|null",
       "source_hashes": {},
       "consumed_source_fragments": {},
@@ -180,28 +213,31 @@ Store `project-context` and `canonical-terms` as two separate entries in `artifa
     "supersedes": "string|null"
   },
   "affected_feature_units": [],
+  "input_requests": [],
   "pause_reason": "string|null",
   "last_resume_event": "object|null",
   "next_ready_nodes": []
 }
 ```
 
-Artifact `status` is orchestration state, while `mission_control_status` is its operator-facing projection. Map `validated` to `Done`, `invalidated` to `Needs attention` until it becomes ready again, and `blocked` to `Blocked`; `ready` means machine-ready for dispatch and is never an approval. `Approved design` is reserved for the active whole-design baseline state, not ordinary artifact completion. Keep `source_version`, `source_hashes`, `dependencies`, and `dependency_status` explicit for every artifact so readiness and invalidation do not have to be inferred from prose or filesystem order.
+Artifact `status` is orchestration state, while `mission_control_status` is its operator-facing projection. Map an unanswered material question to internal `input_needed` and operator-facing `Input needed`; it is neither a failure nor an approval. Map `validated` to `Done`, `invalidated` to `Needs attention` until it becomes ready again, and `blocked` to `Blocked`; `ready` means machine-ready for dispatch and is never an approval. `Approved design` is reserved for the active whole-design baseline state, not ordinary artifact completion. Keep `source_version`, `source_hashes`, `dependencies`, and `dependency_status` explicit for every artifact so readiness and invalidation do not have to be inferred from prose or filesystem order.
 
 Do not store secrets. Use stable IDs and content hashes so resume and invalidation are deterministic.
 
 ## Workflow
 
 1. Load or initialize the manifest from actual files; never trust stale manifest state over filesystem evidence.
-2. When resuming from a product-scope answer, design-approval receipt, or risk-authorization receipt, validate and persist the response, clear `pause_reason`, recompute hashes and ready nodes, and continue automatically in the same pipeline run. Do not require a separate resume confirmation.
-3. Validate `docs/product-idea.md`, dispatch `to-prd` if required, then invoke `to-project-context` once for the two-file bundle. Validate both members separately, verify their shared owner-invocation ID and current source hashes, and do not make `guardrails` ready until both pass.
-4. Compute ready nodes from the dependency graph and dispatch their owner skills with the validated context bundle available as relevance-scoped upstream sources.
-5. After each result, validate the owner boundary, source traceability, required structure, open questions, and content hash.
-6. Reconcile terminology against `docs/canonical-terms.md` and cross-artifact conflicts by re-invoking owners; never patch their artifacts directly. Record only consumed context/term fragments so unrelated bundle edits do not trigger broad invalidation.
-7. Continue until the coherent pre-design SDD baseline validates.
-8. Produce and verify the three prototype candidates, open their three external-browser pages, then pause once for whole-design selection and approval.
-9. Persist the Approved Visual Baseline through its owner, update QA through its owner, and create the development plan through its owner.
-10. Return the pipeline state, evidence, approved Baseline ID, invalidations, and next executable action.
+2. If `docs/product-idea.md` or its DAS Forge handoff is missing, stale, or materially incomplete, set `awaiting-product-idea-intake`, dispatch or resume `to-product-idea` through the foreground adapter, persist the typed request, and return control without launching downstream owners.
+3. When `Create product idea and start SDD` supplies a valid matching handoff receipt, clear the intake pause and continue automatically. Do not request another confirmation.
+4. When resuming from a later product-scope answer, design-approval receipt, or risk-authorization receipt, validate and persist the response, clear `pause_reason`, recompute hashes and ready nodes, and continue automatically in the same pipeline run. Do not require a separate resume confirmation.
+5. Validate `docs/product-idea.md` and its current handoff hash, dispatch `to-prd` if required, then invoke `to-project-context` once for the two-file bundle. Validate both members separately, verify their shared owner-invocation ID and current source hashes, and do not make `guardrails` ready until both pass.
+6. Compute ready nodes from the dependency graph and dispatch their owner skills with the validated context bundle available as relevance-scoped upstream sources.
+7. After each result, validate the owner boundary, source traceability, required structure, open questions, and content hash. Convert a material non-inferable product-intent question into a typed `Input needed` request instead of leaving it in background logs.
+8. Reconcile terminology against `docs/canonical-terms.md` and cross-artifact conflicts by re-invoking owners; never patch their artifacts directly. Record only consumed context/term fragments so unrelated bundle edits do not trigger broad invalidation.
+9. Continue until the coherent pre-design SDD baseline validates.
+10. Produce and verify the three prototype candidates, open their three external-browser pages, then pause once for whole-design selection and approval.
+11. Persist the Approved Visual Baseline through its owner, update QA through its owner, and create the development plan through its owner.
+12. Return the pipeline state, evidence, approved Baseline ID, invalidations, and next executable action.
 
 ## Final Report
 
@@ -209,9 +245,11 @@ Return:
 - `Result`
 - `Pipeline State`
 - `Manifest`
+- `Product Idea Intake And Handoff`
 - `Validated Artifacts`
 - `Prototype Candidates And Browser Receipts`
 - `Approved Baseline ID`, when approved
 - `Invalidated Or Regenerated Artifacts`
 - `Blocking Decision Or Authorization`, only when paused
+- `Input Needed`, only when awaiting an operator answer
 - `Next Executable Action`

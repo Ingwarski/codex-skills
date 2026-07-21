@@ -10,10 +10,14 @@ AI is not the source of truth. `docs/product-idea.md`, accessible project eviden
 
 If information is discoverable in the repository or named sources, inspect it instead of asking. Resolve non-material gaps and pre-approval design ambiguity with the smallest reversible source-grounded choice and record them. Use a focused grill-me question only when a genuinely non-inferable answer materially changes product scope or a high-risk boundary. Playback is not an approval gate.
 
+When invoked by `to-sdd-pipeline`, never surface that question only in background logs or a hidden agent session. Return one typed `ProductIntentQuestion` to the orchestrator so DAS Forge can persist it as `Input needed` and display it through the foreground Product Idea Intake UI. After the explicit answer, let `to-product-idea` version the upstream artifact when the answer changes product intent, then resume automatically. In standalone interactive use, ask the same one question directly.
+
 ## Input
 
 Require:
 - `docs/product-idea.md`
+
+The file must contain current operator-confirmed product intent. In DAS Forge, require the matching Product Idea Intake handoff/hash supplied by the orchestrator. If the file is absent or materially incomplete, return control to `to-product-idea`; do not synthesize the mandate inside the PRD owner.
 
 Read when present and relevant:
 - `README.md`

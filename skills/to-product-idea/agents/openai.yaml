@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Product Idea"
+  short_description: "Run a resumable product-intent interview"
+  default_prompt: "Use $to-product-idea to turn my initial product concept into docs/product-idea.md through a visible, one-question-at-a-time intake."
