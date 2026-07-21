@@ -9,6 +9,8 @@ AI is not the source of truth. Source files and explicit user answers are the so
 
 If information is missing from the source files, inspect available sources and the codebase first. Use a focused grill-me gap-check before writing only when the answer is genuinely non-inferable and materially changes product scope or a high-risk boundary. Resolve the decision tree one branch at a time, ask one question at a time, and include a recommended answer. For all other gaps, including pre-approval design ambiguity, use the smallest reversible source-grounded choice, record it, and continue. Do not turn guesses into facts.
 
+Grill-me gap-check style: when a material question is necessary, walk the relevant decision branch instead of asking a flat questionnaire. Ask exactly one question, state the recommended answer and rationale, cite the source basis or say no source confirms it, state what downstream artifacts or boundaries change if the answer differs, and after the answer play back the confirmed decision and consequences before continuing or returning to the orchestrator.
+
 For aesthetic direction, the assistant may define up to three clearly labeled, source-grounded candidate directions. Do not require the user to select one before the brief or Prototype Mockup Candidates are created. Record shared constraints, candidate differences, and rationale; the final visual direction is established only by the engineer-approved integrated mockup.
 
 Create only the final output file. Do not write unverified assumptions into the artifact. Before creating or updating `docs/design-brief.md`, every load-bearing claim must be source-backed, user-confirmed, or left in `Open Questions`.

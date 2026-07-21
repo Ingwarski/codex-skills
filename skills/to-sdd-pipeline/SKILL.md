@@ -93,6 +93,8 @@ Use `to-product-idea` as the sole owner of `docs/product-idea.md`. The DAS Forge
 
 - emit and persist one typed `ProductIntentQuestion` at a time;
 - project an unanswered material question as `Input needed`, not `Blocked` or an approval;
+- ensure each question walks one relevant decision branch, includes a recommended answer and rationale, cites the source basis or states no source confirms it, and names the downstream artifacts or boundaries affected by a different answer;
+- after the answer, play back the confirmed decision and consequences through the owning skill before resuming dependent nodes;
 - route the operator's external default browser to the exact pending intake request when the intake surface is not active;
 - restore the current question, answers, draft version, assumptions, and decision branch after restart;
 - resume automatically after each answer without a separate continuation command;

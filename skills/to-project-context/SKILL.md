@@ -61,8 +61,11 @@ Use the Matt Pocock-style grilling approach, adapted for documents:
 3. Ask only one question at a time when information is missing and blocking.
 4. For every question, include a recommended answer based on the evidence.
 5. Do not ask questions that can be answered by reading the project files.
-6. Do not create PRD, screen map, wireframes, code, or implementation outputs. A full `to-sdd-pipeline` invocation already authorizes the orchestrator, not this owner skill, to continue after this bundle validates.
-7. Stop grilling once the documents can be created with clearly labeled assumptions.
+6. Cite the source basis for the question, or say no source confirms the answer.
+7. State what downstream artifacts or vocabulary boundaries change if the answer differs.
+8. After the answer, play back the confirmed decision and consequences before continuing or returning to the orchestrator.
+9. Do not create PRD, screen map, wireframes, code, or implementation outputs. A full `to-sdd-pipeline` invocation already authorizes the orchestrator, not this owner skill, to continue after this bundle validates.
+10. Stop grilling once the documents can be created with clearly labeled assumptions.
 
 ## Context Decision Tree
 

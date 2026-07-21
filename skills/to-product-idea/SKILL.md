@@ -70,6 +70,10 @@ In a direct interactive Codex session without the DAS Forge adapter, ask the sam
 - Ask exactly one question per turn.
 - Include a recommended answer and short rationale.
 - Follow only decision branches made relevant by prior answers.
+- Walk the relevant decision branch instead of asking a flat questionnaire.
+- For each material question, cite the source basis or say no source confirms it.
+- State what downstream artifacts or boundaries change if the answer differs.
+- After the answer, play back the confirmed decision and consequences before continuing or handing off.
 - Ask only when the answer is genuinely non-inferable and materially changes user, problem, outcome, primary journey, MVP boundary, business rule, data/authority boundary, target surface, or another upstream product commitment.
 - Inspect source files and the codebase instead of asking for discoverable facts.
 - Resolve non-material detail with the smallest reversible source-grounded assumption and show it in the draft coverage view.

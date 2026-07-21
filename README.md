@@ -54,6 +54,7 @@ All skills follow the same operating contract:
 - Missing product intent is surfaced through the foreground Product Idea Intake, never silently generated in background logs. Material questions persist as `Input needed`; silence, timeout, and recommendations are not consent.
 - Intake answers and `Create product idea and start SDD` are input/start actions, not approval receipts. The only normal approval is still approval of the complete integrated prototype.
 - Discoverable information must be read from sources or code instead of asked. A focused grill-me gap-check runs only for genuinely non-inferable information that materially changes product scope, the whole-design baseline, or a high-risk boundary.
+- Every material gap-check walks one relevant decision branch, asks one question, gives a recommended answer and rationale, cites the source basis or says no source confirms it, names affected downstream artifacts or boundaries, and plays back the confirmed decision plus consequences before continuing.
 - Non-material gaps use the smallest reversible source-grounded default, are recorded, and do not become approval gates.
 - An owner invocation creates only its declared final output path or cohesive output set. No draft output files.
 - Unverified assumptions are never written as facts. `project-context.md` may retain them only in its explicitly labeled `Assumptions` section; unresolved decisions belong in `Open Questions`.
